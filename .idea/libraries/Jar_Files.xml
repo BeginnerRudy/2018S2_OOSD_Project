@@ -1,10 +1,15 @@
 <component name="libraryTable">
   <library name="Jar Files">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/../Slick Libraries/Jar Files" />
+      <root url="file://$PROJECT_DIR$/Slick Libraries/Jar Files" />
     </CLASSES>
     <JAVADOC />
+    <NATIVE>
+      <root url="file://$PROJECT_DIR$/Slick Libraries/Linux" />
+      <root url="file://$PROJECT_DIR$/Slick Libraries/OSX" />
+      <root url="file://$PROJECT_DIR$/Slick Libraries/Windows" />
+    </NATIVE>
     <SOURCES />
-    <jarDirectory url="file://$PROJECT_DIR$/../Slick Libraries/Jar Files" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/Slick Libraries/Jar Files" recursive="false" />
   </library>
 </component>
