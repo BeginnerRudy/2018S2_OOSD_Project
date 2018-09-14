@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Linux">
+    <CLASSES />
+    <JAVADOC />
+    <NATIVE>
+      <root url="file://$PROJECT_DIR$/../Slick Libraries/Linux" />
+    </NATIVE>
+    <SOURCES />
+  </library>
+</component>
