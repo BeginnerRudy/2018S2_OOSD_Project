@@ -15,28 +15,28 @@ public class Obstacle extends Sprite{
     public void update(int dealt, Character direction){
         // move right if the direction is RIGHT
         if (direction.equals(RIGHT)) {
-            super.setX(super.getX() + dealt * SPEED);
-            if (super.getX() > App.SCREEN_WIDTH + super.getImageWidth()/2){
-                super.setX(-super.getImageWidth()/2);
+            super.getPosition().setX(super.getPosition().getX() + dealt * SPEED);
+            if (super.getPosition().getX() > App.SCREEN_WIDTH + super.getImage().getHeight()/2){
+                super.getPosition().setX(-(float)super.getImage().getHeight()/2);
             }
             // move left if the direction is LEFT
         }else if (direction.equals(LEFT)) {
-            super.setX(super.getX() - dealt * SPEED);
-            if (super.getX() < -super.getImageWidth()/2){
-                super.setX(App.SCREEN_WIDTH + super.getImageWidth()/2);
+            super.getPosition().setX(super.getPosition().getX() - dealt * SPEED);
+            if (super.getPosition().getX() < -(float)super.getImage().getHeight()/2){
+                super.getPosition().setX(App.SCREEN_WIDTH + (float)super.getImage().getHeight()/2);
             }
         }
 
         // update the bounding box
-        super.getBoundingBox().setX(super.getX());
-        super.getBoundingBox().setY(super.getY());
+        super.getBoundingBox().setX(super.getPosition().getX());
+        super.getBoundingBox().setY(super.getPosition().getY());
     }
 
 
     // overriding the render method here
     @Override
     public void render(){
-        super.getImage().drawCentered(super.getX(),super.getY());
+        super.getImage().drawCentered(super.getPosition().getX(),super.getPosition().getY());
     }
 
 }

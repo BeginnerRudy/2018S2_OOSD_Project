@@ -20,7 +20,7 @@ public class Tile extends Sprite{
         // starts from the X offset which is 0
         // until the entire tile is off screen
 
-        super.getImage().drawCentered(super.getX(), super.getY());
+        super.getImage().drawCentered(super.getPosition().getX(), super.getPosition().getY());
 //        // In a sentence, the drawSprite of Tile would draw the Tile image on a given horizontal line
 //        for (float i = super.getX() + super.getImageWidth()/2;
 //             i - super.getImageWidth()/2< App.SCREEN_WIDTH ; i += super.getImageWidth() ){
