@@ -18,7 +18,9 @@ public abstract class Sprite {
     }
 
     // I am going to override render in concrete class, respectively
-    public abstract void render();
+    public void render(){
+        this.image.drawCentered(this.position.getX(), this.position.getY());
+    }
 
     //	I am going to create an interface called Updatable instead of this update method.
     public void update(Input input, int delta) {
