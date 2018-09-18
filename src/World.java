@@ -77,39 +77,10 @@ public class World {
     private ArrayList<Tree> trees = new ArrayList<Tree>();
 
 	public World() throws SlickException {
-
-		// Perform initialisation logic
-        try (BufferedReader br = new BufferedReader(new FileReader(LEVEL0_REFERENCE))){
-            // create an array of string to store each line in the format of String
-            String[] description;
-            // String line to store the raw data
-            String line;
-            while((line = br.readLine() )!= null){
-                // load data into description
-                description = line.split(",");
-                float x = Float.parseFloat(description[INDEX_OF_X]);
-                float y = Float.parseFloat(description[INDEX_OF_Y]);
-
-                // create Tile object, if the description contains 3 values
-                if (description.length == NUM_OF_VALUES_OF_TILE){
-                    // create the Water Tile object
-                    if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(WATER)){
-                        waters.add(new Water(WATER_REFERENCE, x, y));
-                    }// create the Grass Tile object
-                    else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(GRASS)){
-                        grasses.add(new Grass(GRASS_REFERENCE, x, y));
-                    }// create the Tree Tile object
-                    if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(TREE)){
-                        trees.add(new Tree(TREE_REFERENCE, x, y));
-                    }
-                }// create Vehicle object, if the description contains 4 values
-                else if (description.length == NUM_OF_VALUES_OF_VEHICLE){
-
-                }
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        // initialize the background of the world of level1
+        // This background contains all the objects used in this game.
+        // More details in the description  of method createTheBackground
+        this.createTheBackground(LEVEL0_REFERENCE);
 
 
         //initialize the player
@@ -160,6 +131,48 @@ public class World {
             sprite.render();
         }
     }
+
+    /**Name: private void createTheBackground(String LEVEL_REFERENCE);
+     *
+     * @param LEVEL_REFERENCE => The reference of the level CSV file.
+     *
+     * Description: This method is use to create all the objects described in the level CSV file.
+     * */
+    private void createTheBackground(String LEVEL_REFERENCE){
+        // Perform initialisation logic
+        try (BufferedReader br = new BufferedReader(new FileReader(LEVEL_REFERENCE))){
+            // create an array of string to store each line in the format of String
+            String[] description;
+            // String line to store the raw data
+            String line;
+            while((line = br.readLine() )!= null){
+                // load data into description
+                description = line.split(",");
+                float x = Float.parseFloat(description[INDEX_OF_X]);
+                float y = Float.parseFloat(description[INDEX_OF_Y]);
+
+                // create Tile object, if the description contains 3 values
+                if (description.length == NUM_OF_VALUES_OF_TILE){
+                    // create the Water Tile object
+                    if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(WATER)){
+                        waters.add(new Water(WATER_REFERENCE, x, y));
+                    }// create the Grass Tile object
+                    else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(GRASS)){
+                        grasses.add(new Grass(GRASS_REFERENCE, x, y));
+                    }// create the Tree Tile object
+                    if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(TREE)){
+                        trees.add(new Tree(TREE_REFERENCE, x, y));
+                    }
+                }// create Vehicle object, if the description contains 4 values
+                else if (description.length == NUM_OF_VALUES_OF_VEHICLE){
+
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 //
 //    /**This SpritesRender method is to update all the Tile in the Tile ArrayList
 //     *
