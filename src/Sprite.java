@@ -31,11 +31,18 @@ public abstract class Sprite {
     }
 
 
-    public void contactSprite(Sprite other) {
+    /**
+     * This function returns boolean value.
+     * If the two Sprite's bounding box contacted then return true.
+     * Otherwise, return false.
+     * @param other => another Sprite objects to test contacting
+     * */
+    public boolean contactSprite(Sprite other) {
         // Should be called when one sprite makes contact with another.
         if (this.bb.intersects(other.bb)) {
-            System.exit(0);
+            return true;
         }
+        return false;
     }
 
     /**

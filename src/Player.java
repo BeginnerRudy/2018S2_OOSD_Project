@@ -3,10 +3,12 @@ import org.newdawn.slick.Input;
 
 public class Player extends Sprite{
     public static final float STEP_SIZE = 48;
+    private boolean isContactWithTree;
 
     // The constructor of Player
     public Player(String imgSrc, float x, float y) throws SlickException{
         super(imgSrc, x, y);
+        isContactWithTree = false;
     }
 
     // overloading the render method here
@@ -21,11 +23,20 @@ public class Player extends Sprite{
      * */
     public void update (Input input){
         // update the player's move
-        this.move(input);
+        if (!isContactWithTree) {
+            this.move(input);
+        }else{
+            //do nothing, stop here since it is a tree! LOL
+        }
 
         // update the bounding box
         super.getBoundingBox().setX(super.getPosition().getX());
         super.getBoundingBox().setY(super.getPosition().getY());
+    }
+
+    // The setter for the attribute isContactWithTree
+    public void setContactWithTree(boolean contactWithTree) {
+        isContactWithTree = contactWithTree;
     }
 
     /**

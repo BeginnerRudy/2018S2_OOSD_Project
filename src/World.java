@@ -117,9 +117,13 @@ public class World {
 	}
 	
 	public void update(Input input, int delta) {
-		// Update all of the sprites in the game
+        // update the Tree Tile
+        for (Tree tree:trees){
+            tree.update(player);
+        }
+
+        // Update all of the sprites in the game
         player.update(input);
-        // update background
 
 
         // update the contact condition between player and water most south line
@@ -134,26 +138,37 @@ public class World {
 		// Draw all of the sprites in the game
 
         //draw the Water Tiles
-        ObjectsRender(waters);
+        SpritesRender(waters);
 
         //draw the Grass Tiles
-        ObjectsRender(grasses);
+        SpritesRender(grasses);
 
         //draw the Tree Tiles
-        ObjectsRender(trees);
+        SpritesRender(trees);
 
         // draw the player
         player.render();
 	}
 
-	/**This function is to draw all the sprites in the Sprite ArrayList
+	/**SpritesRender method is to draw all the sprites in the Sprite ArrayList
      *
      * @param sprites => The array list of created Sprite objects
      * */
-	private static <T extends Sprite> void ObjectsRender(ArrayList<T> sprites){
+	private static <T extends Sprite> void SpritesRender(ArrayList<T> sprites){
         // draw all the sprite of type T
         for (T sprite:sprites){
             sprite.render();
         }
     }
+//
+//    /**This SpritesRender method is to update all the Tile in the Tile ArrayList
+//     *
+//     * @param tiles => The array list of created Tile objects
+//     * */
+//    private static <T extends Tile> void TileUpdate(ArrayList<T> tiles){
+//        // draw all the sprite of type T
+//        for (T tile:tiles){
+//            tile.update();
+//        }
+//    }
 }
