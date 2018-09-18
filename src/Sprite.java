@@ -2,7 +2,6 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import utilities.BoundingBox;
-import org.newdawn.slick.GameContainer;
 
 public abstract class Sprite {
     private Image image;

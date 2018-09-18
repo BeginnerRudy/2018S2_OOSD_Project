@@ -20,6 +20,22 @@ public class Player extends Sprite{
      * @param input -> the input from keyboard
      * */
     public void update (Input input){
+        // update the player's move
+        this.move(input);
+
+        // update the bounding box
+        super.getBoundingBox().setX(super.getPosition().getX());
+        super.getBoundingBox().setY(super.getPosition().getY());
+    }
+
+    /**
+     * The move function is a helper function for the method update above.
+     * This function updates the player's position according to the input of directional keys
+     * @param input => the input from the keyboard, especially the directional keys
+     *
+     * */
+    private void move(Input input){
+
         // Move the player stepSize up when the Up key is pressed
         float playerHeadPositionY = super.getPosition().getY()- (float)super.getImage().getHeight()/2; // the y coordinates of player's head
         if (input.isKeyPressed(Input.KEY_UP) && (playerHeadPositionY >= STEP_SIZE)) {
@@ -53,8 +69,5 @@ public class Player extends Sprite{
             super.getPosition().setX(super.getPosition().getX()+STEP_SIZE);
         }
 
-        // update the bounding box
-        super.getBoundingBox().setX(super.getPosition().getX());
-        super.getBoundingBox().setY(super.getPosition().getY());
     }
 }
