@@ -38,18 +38,19 @@ public class World {
     // PLAYER_INITIAL_Y is the initial y coordinator of player
     private static final float PLAYER_INITIAL_Y = 720;
 
+    // the csv identifier for water
+    private static final String WATER = "water";
+
 
     /*Define Sprites and Background*/
-    // declare the Background
-    private Background background;
     // declare the player
     private Player player;
 
 	public World() throws SlickException {
+
 		// Perform initialisation logic
 
-        // initialize the background
-        background = new Background(GRASS_REFERENCE, WATER_REFERENCE, BUS_REFERENCE);
+
 
         //initialize the player
         player = new Player(PLAYER_REFERENCE, PLAYER_INITIAL_X, PLAYER_INITIAL_Y);
@@ -59,19 +60,13 @@ public class World {
 		// Update all of the sprites in the game
         player.update(input);
         // update background
-        background.update(delta);
+
 
         // update the contact condition between player and water most south line
-        for (Tile water: background.getWaters()[0]){
-            player.contactSprite(water);
-        }
+
 
         // update the contact between player and obstacles
-        for (Obstacle[] obstacles:background.getObstacles()){
-            for (Obstacle obstacle:obstacles){
-                player.contactSprite(obstacle);
-            }
-        }
+
 
 	}
 	
@@ -79,7 +74,7 @@ public class World {
 		// Draw all of the sprites in the game
 
         //draw the background
-        background.render();
+
         // draw the player
         player.render();
 	}
