@@ -95,13 +95,11 @@ public class World {
         // update the position and boundingbox of player's next position depends on input
         player.updatePlayNextMove(input);
 
-        // update the Tree Tile
-//        for (Tree tree:trees){
-//            tree.update(player);
-//        }
-        for (int i = 0; i < trees.size(); i++){
-            trees.get(i).update(player);
+         //update the Tree Tile
+        for (Tree tree:trees){
+            tree.update(player);
         }
+
 
         // Update all of the sprites in the game
         player.update();
