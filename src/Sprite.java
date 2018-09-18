@@ -32,10 +32,13 @@ public abstract class Sprite {
 
 
     /**
-     * This function returns boolean value.
+     * Method signature: public boolean contactSprite(Sprite other);
+     *
+     * @param other => another Sprite objects to test contacting
+     *
+     * This method returns boolean value.
      * If the two Sprite's bounding box contacted then return true.
      * Otherwise, return false.
-     * @param other => another Sprite objects to test contacting
      * */
     public boolean contactSprite(Sprite other) {
         // Should be called when one sprite makes contact with another.

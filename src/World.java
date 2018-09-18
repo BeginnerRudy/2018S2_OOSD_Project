@@ -88,13 +88,26 @@ public class World {
 	}
 	
 	public void update(Input input, int delta) {
+	    // set the player.isContactWithTree to false, in order to handle the case no tree contacts the player
+        // while if there is a tree contacts with the player, this attribute will be set to true by that tree.update(Player player);
+        player.setContactWithTree(false);
+
+        // update the position and boundingbox of player's next position depends on input
+        player.updatePlayNextMove(input);
+
         // update the Tree Tile
-        for (Tree tree:trees){
-            tree.update(player);
+//        for (Tree tree:trees){
+//            tree.update(player);
+//        }
+        for (int i = 0; i < trees.size(); i++){
+            trees.get(i).update(player);
         }
 
         // Update all of the sprites in the game
-        player.update(input);
+        player.update();
+
+
+
 
 
         // update the contact condition between player and water most south line
@@ -121,9 +134,11 @@ public class World {
         player.render();
 	}
 
-	/**SpritesRender method is to draw all the sprites in the Sprite ArrayList
+	/** Method signature: private static <T extends Sprite> void SpritesRender(ArrayList<T> sprites);
      *
      * @param sprites => The array list of created Sprite objects
+     *
+     *  Description: This is a generic methods that calls the render method for each sprite in an arrayList of Sprite
      * */
 	private static <T extends Sprite> void SpritesRender(ArrayList<T> sprites){
         // draw all the sprite of type T

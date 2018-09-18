@@ -5,6 +5,12 @@ public class Position {
         this.x = x;
         this.y = y;
     }
+
+    // The copy constructor
+    public Position(Position copy){
+        x = copy.getX();
+        y = copy.getY();
+    }
     // return x
     public float getX() {
         return x;
