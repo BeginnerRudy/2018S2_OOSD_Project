@@ -5,7 +5,7 @@ import utilities.BoundingBox;
 
 public class Player extends Sprite{
     public static final float STEP_SIZE = 48;
-    private boolean isContactWithTree;
+    private boolean isContactWithSolidSprite;
     private Position nextStep;
     private BoundingBox nextStepBB;
 
@@ -15,7 +15,7 @@ public class Player extends Sprite{
         super(imgSrc, x, y);
         nextStep = new Position(x, y); // Initialize the next step Position to the start position
                                         // due to that there is no information about next step as game just started
-        isContactWithTree = false;
+        isContactWithSolidSprite = false;
         nextStepBB = new BoundingBox(new Image(imgSrc), x, y);
     }
 
@@ -56,7 +56,7 @@ public class Player extends Sprite{
      *                          push the Player out of the Screen.
      * */
     public void update (){
-        if (!this.isContactWithTree) {
+        if (!this.isContactWithSolidSprite) {
             super.getPosition().setX(nextStep.getX());
             super.getPosition().setY(nextStep.getY());
         }else{
@@ -68,13 +68,10 @@ public class Player extends Sprite{
         super.getBoundingBox().setY(super.getPosition().getY());
     }
 
-    public boolean isContactWithTree() {
-        return isContactWithTree;
-    }
 
     // The setter for the attribute isContactWithTree
-    public void setContactWithTree(boolean contactWithTree) {
-        this.isContactWithTree = contactWithTree;
+    public void setContactWithSolidSprite(boolean isContactWithSolidSprite) {
+        this.isContactWithSolidSprite = isContactWithSolidSprite;
     }
 
     /**

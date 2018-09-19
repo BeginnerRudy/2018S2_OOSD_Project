@@ -1,3 +1,21 @@
 public interface Solidable {
-    void solidPlayer(Player player);
+    /**Method signature: default void solidPlayer(Player player, Sprite solidSprite){
+     *
+     * @param player => The reference to player
+     * @param solidSprite => The reference to a solid Sprite (implements Solidable interface)
+     *
+     * Description: This default would check whether solidSprite contacts with player.
+     *                    If it does, set player.isContactWithSolidSprite to true.
+     *                    Otherwise, do nothing.
+     * */
+
+
+    default void solidPlayer(Player player, Sprite solidSprite){
+        // if the solidSprite contacts with the BoundingBox of the next position of the player, then make player cannot move further.
+        if (solidSprite.getBoundingBox().intersects(player.getNextStepBB())){
+            player.setContactWithSolidSprite(true);
+        }
+        // else case which is that no solidSprite contacts with the player is
+        // handled by setting the player.isContactWithSolidSprite to false each time update in the update of Class world
+    }
 }
