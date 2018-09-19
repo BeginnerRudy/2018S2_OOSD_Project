@@ -112,12 +112,16 @@ public class World {
                 // find the Position of center of current hole
 
                 // add the new Finished player at the player's current hole and draw it at the center of it
-                finishedPlayers.add(new FinishedPlayer(PLAYER_REFERENCE, PLAYER_INITIAL_X, PLAYER_INITIAL_Y));
+                finishedPlayers.add(new FinishedPlayer(PLAYER_REFERENCE, player.getPosition().getX(), player.getPosition().getY()));
                 // reset the player to the starting point
                 player.restart(PLAYER_INITIAL_X,PLAYER_INITIAL_Y );
             }// else => do nothing => since not in any new hole
         }
 
+        // Update all the FinishedPlayer objects
+        for (FinishedPlayer finishedPlayer:finishedPlayers){
+            finishedPlayer.update(player);
+        }
 
         // Update all of the sprites in the game
         player.update();
@@ -145,6 +149,9 @@ public class World {
 
         //draw the Tree Tiles
         SpritesRender(trees);
+
+        //draw the FinishedPlayer sprites
+        SpritesRender(finishedPlayers);
 
         // draw the player
         player.render();
