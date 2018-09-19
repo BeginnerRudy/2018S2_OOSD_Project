@@ -110,9 +110,9 @@ public class World {
             */
             if (tree.getPosition().equalsY(player.getPosition())){
                 // find the Position of center of current hole
-
+                Position holeCenter = this.holeCenter(player);
                 // add the new Finished player at the player's current hole and draw it at the center of it
-                finishedPlayers.add(new FinishedPlayer(PLAYER_REFERENCE, player.getPosition().getX(), player.getPosition().getY()));
+                finishedPlayers.add(new FinishedPlayer(PLAYER_REFERENCE, holeCenter.getX(), holeCenter.getY()));
                 // reset the player to the starting point
                 player.restart(PLAYER_INITIAL_X,PLAYER_INITIAL_Y );
             }// else => do nothing => since not in any new hole
@@ -210,6 +210,49 @@ public class World {
             e.printStackTrace();
         }
     }
+
+    /**
+     *
+     *
+     * */
+    public Position holeCenter(Player player) throws SlickException{
+        // leftNearest is initialized in a special way.
+        // The difference between the x-coordinate of the center of both
+        // leftNearestTree and player must larger than two STEP_SIZE,
+        // since if it is not, the player
+        Tree leftNearestTree = new Tree(TREE_REFERENCE,
+                player.getPosition().getX() - 10*Player.STEP_SIZE,
+                player.getPosition().getY());
+        Tree rightNeatestTree = new Tree(TREE_REFERENCE,
+                player.getPosition().getX() +  2*Player.STEP_SIZE,
+                player.getPosition().getY());
+        float minLeftDistance = App.SCREEN_WIDTH; // since the min distance must less the SCREEN_WIDTH, it is safe to do this
+        float minRightDistance = App.SCREEN_WIDTH;// same reason as above
+
+        for (Tree tree:trees){
+            // only find trees in the domain of tree has same y-coordinate with player
+            if (tree.getPosition().equalsY(player.getPosition())){
+                // get the current distance
+                float distance = tree.getPosition().getX() - player.getPosition().getX();
+                // negative means tree is on the left of the player
+                if (distance < 0){
+                    if ((distance = Math.abs(distance)) < minLeftDistance){
+                        minLeftDistance = distance;
+                        leftNearestTree = tree;
+                    }
+                }
+                // positive means tree is on the right of the player
+                else if (distance >0){
+                    if (distance < minRightDistance){
+                        minRightDistance = distance;
+                        rightNeatestTree = tree;
+                    }
+                }
+            }
+        }
+        return leftNearestTree.getPosition().midPoint(rightNeatestTree.getPosition());
+    }
+
 
 //
 //    /**This SpritesRender method is to update all the Tile in the Tile ArrayList
