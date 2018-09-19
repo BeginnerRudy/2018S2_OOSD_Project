@@ -57,14 +57,7 @@ public class Player extends Sprite{
      *
      * none
      *
-     * Description: This method update several attributes of Class player which described as followed:
-     *              1. The position of the player.
-     *                  According to the given input and the contact state with Solid, Killable and Rideable objects in the World.
-     *                  a. Solid Objects => Player cannot move into Solid Objects
-     *                      i. Tree => When player contacts with a Tree, player cannot move into it.
-     *                      ii.  Bulldozer => When player contacts with a Bulldozer, the player cannot go into it as well as it will
-     *                          be push to move along with the Bulldoze. Furthermore interested, the Player will die if the Bulldozer
-     *                          push the Player out of the Screen.
+     * Description: This method update player's current position and the boundingBox
      * */
     public void update (){
         //Take next step if player is not contact with any solid Sprite and not in a hole and not get killed
