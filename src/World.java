@@ -264,9 +264,11 @@ public class World {
         return output;
     }
 
-    /**
+    /** Method signature: public Position holeCenter(Player player);
      *
+     * @param player The reference to player
      *
+     *Description: Return the center Position of the hole that the player current at.
      * */
     public Position holeCenter(Player player) throws SlickException{
         // The initial tree object has no effect on selecting tree later, only the
@@ -336,16 +338,4 @@ public class World {
         background.putIfAbsent(key, new ArrayList<>());
         background.get(key).add(sprite);
     }
-
-//
-//    /**This SpritesRender method is to update all the Tile in the Tile ArrayList
-//     *
-//     * @param tiles => The array list of created Tile objects
-//     * */
-//    private static <T extends Tile> void TileUpdate(ArrayList<T> tiles){
-//        // draw all the sprite of type T
-//        for (T tile:tiles){
-//            tile.update();
-//        }
-//    }
 }
