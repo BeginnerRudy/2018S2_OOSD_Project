@@ -3,10 +3,10 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 public class World {
-
     /*Define CONSTANT*/
 
     // define the image reference of grass
@@ -88,6 +88,10 @@ public class World {
     private ArrayList<Tree> trees = new ArrayList<>();
     // The ArrayList of Type FinishedPlayer to store Water Tile in the world
     private ArrayList<FinishedPlayer> finishedPlayers = new ArrayList<>();
+    // The HashMap with (String, ArrayList<Sprite>) to represent the "background" for level
+    private HashMap<String, ArrayList<Sprite>> background = new HashMap<>();
+
+    private Tree t;
 
 	public World() throws SlickException {
         // initialize the background of the world of level1
@@ -99,6 +103,11 @@ public class World {
         this.currentLevel = LEVEL_0;
         //initialize the player
         player = new Player(PLAYER_REFERENCE, PLAYER_INITIAL_X, PLAYER_INITIAL_Y);
+
+
+        background.put(TREE, new ArrayList<>());
+        background.get(TREE).add(new Tree(TREE_REFERENCE, 500, 500));
+        t = new Tree((Tree) background.get(TREE).get(0));
 	}
 	
 	public void update(Input input, int delta)  throws SlickException {
@@ -134,6 +143,7 @@ public class World {
         // update the position and boundingbox of player's next position depends on input
         player.updatePlayNextMove(input);
 
+        t.update(player);
 
          //update the Tree Tile for checking contacting with player
         for (Tree tree:trees){
@@ -188,7 +198,7 @@ public class World {
 	
 	public void render(Graphics g) {
 		// Draw all of the sprites in the game
-
+        t.render();
         //draw the Water Tiles
         SpritesRender(waters);
 
@@ -224,7 +234,8 @@ public class World {
      *
      * Description: This method is use to create all the objects described in the level CSV file.
      * */
-    private void createTheBackground(String LEVEL_REFERENCE){
+    private HashMap<String, ArrayList<Sprite>> createTheBackground(String LEVEL_REFERENCE){
+        HashMap<String, ArrayList<Sprite>> output = new HashMap<>();
         // Perform initialisation logic
         try (BufferedReader br = new BufferedReader(new FileReader(LEVEL_REFERENCE))){
             // create an array of string to store each line in the format of String
@@ -240,6 +251,7 @@ public class World {
                 // create Tile object, if the description contains 3 values
                 if (description.length == NUM_OF_VALUES_OF_TILE){
                     // create the Water Tile object
+                    this.addSpriteIntoBackground(WATER, background, new Water(WATER_REFERENCE, x, y));
                     if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(WATER)){
                         waters.add(new Water(WATER_REFERENCE, x, y));
                     }// create the Grass Tile object
@@ -317,6 +329,19 @@ public class World {
         return levelOutPut;
     }
 
+    /**Method signature: public void addSpriteIntoBackground(String key,  HashMap<String, ArrayList<Sprite>> background, Sprite sprite);
+     *
+     * @param key The key of value to add
+     * @param background The HashMap to add
+     * @param sprite  The Sprite object to be added
+     *
+     * Description: This method would add one Sprite objects according to given String key value.
+     * */
+    public void addSpriteIntoBackground(String key,  HashMap<String, ArrayList<Sprite>> background, Sprite sprite){
+        // if there does not have Key called key in the background, then create one and add the sprite into it
+        background.putIfAbsent(key, new ArrayList<>());
+        background.get(key).add(sprite);
+    }
 
 //
 //    /**This SpritesRender method is to update all the Tile in the Tile ArrayList

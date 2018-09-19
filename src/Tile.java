@@ -12,4 +12,14 @@ public class Tile extends Sprite {
         super(imgSrc, x, y);
     }
 
+    /**Method signature: public Tile(Tile copy);
+     *
+     * @param copy The reference to copy
+     *
+     * Description: This a copy constructor for Tile
+     * */
+    public Tile(Tile copy){
+        super(copy);
+    }
+
 }

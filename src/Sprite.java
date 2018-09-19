@@ -15,6 +15,17 @@ public abstract class Sprite {
         bb = new BoundingBox(image, x, y);
 
     }
+    /**Method signature: public Sprite(Sprite copy);
+     *
+     * @param copy The reference to copy
+     *
+     * Description: This a copy constructor for Sprite
+     * */
+    public Sprite(Sprite copy){
+        image = copy.getImage();
+        position = copy.getPosition();
+        bb = copy.getBoundingBox();
+    }
 
     // I am going to override render in concrete class, respectively
     public void render(){
