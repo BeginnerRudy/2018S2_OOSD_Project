@@ -46,7 +46,7 @@ public class Player extends Sprite{
 
     /** Method Signature: public void update (Input input);
      *
-     * @param -> none
+     * none
      *
      * Description: This method update several attributes of Class player which described as followed:
      *              1. The position of the player.
@@ -150,6 +150,16 @@ public class Player extends Sprite{
      * */
     public boolean isContactWithSolidSprite() {
         return isContactWithSolidSprite;
+    }
+
+    /** Method signature: public boolean isInAHole();
+     *
+     * no argument
+     *
+     * Description: The getter of isInAHole
+     * */
+    public boolean isInAHole() {
+        return isInAHole;
     }
 
     /**Method signature:public void restart(float x, float y);

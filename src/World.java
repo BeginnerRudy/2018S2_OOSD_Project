@@ -3,6 +3,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 public class World {
 
@@ -55,6 +56,14 @@ public class World {
     private static final int INDEX_OF_Y = 2;
     // the INDEX of Vehicle moving direction in lvl File
     private static final int INDEX_OF_DIRECTION = 3;
+    // The number of runs need to finished to get to next level
+    private static final int NUM_OF_RUNS_TO_NEXT_LEVEL = 5;
+    // The symbol to indicate level 0
+    private static final int LEVEL_0 = 0;
+    // The symbol to indicate level 1
+    private static final int LEVEL_1 = 1;
+    // The symbol to indicate level 2
+    private static final int LEVEL_2 = 2;
 
 
     // the csv identifier for water
@@ -69,6 +78,8 @@ public class World {
     /*Define Sprites and Background*/
     // declare the player
     private Player player;
+    // declare the current level of the world
+    private int currentLevel;
     // The ArrayList of Type Water to store Water Tile in the world
     private ArrayList<Water> waters = new ArrayList<>();
     // The ArrayList of Type Water to store Water Tile in the world
@@ -84,12 +95,27 @@ public class World {
         // More details in the description  of method createTheBackground
         this.createTheBackground(LEVEL0_REFERENCE);
 
-
+        // begin with level 0
+        this.currentLevel = LEVEL_0;
         //initialize the player
         player = new Player(PLAYER_REFERENCE, PLAYER_INITIAL_X, PLAYER_INITIAL_Y);
 	}
 	
 	public void update(Input input, int delta)  throws SlickException {
+	    // check is it the time to turn to next level
+        int numOfRunsFinished = finishedPlayers.size();
+        System.out.println(numOfRunsFinished);
+        this.currentLevel = this.updateLevel(numOfRunsFinished);
+
+        // swap to new level according to current level
+        if (this.currentLevel == LEVEL_2){
+            System.exit(0);
+        }else if (this.currentLevel == LEVEL_1){
+            System.out.println(2);
+        }else if(this.currentLevel == LEVEL_0){
+            // do nothing, since we start with level 0.
+        }
+
 	    // set the player.isContactWithTree to false, in order to handle the case no tree contacts the player
         // while if there is a tree contacts with the player, this attribute will be set to true by that tree.update(Player player);
         player.setContactWithSolidSprite(false);
@@ -121,15 +147,17 @@ public class World {
                  * line. Because trees are assumed to be solid, thus if they are in same line,
                  * this implies that the player is in the hole.
                  */
-                if (tree.getPosition().equalsY(player.getNextStep())) {
-                    player.setInAHole(true);// yes in this time it is in a hole
-                    // find the Position of center of current hole
-                    Position holeCenter = this.holeCenter(player);
-                    // add the new Finished player at the player's current hole and draw it at the center of it
-                    finishedPlayers.add(new FinishedPlayer(PLAYER_REFERENCE, holeCenter.getX(), holeCenter.getY()));
-                    // reset the player to the starting point
-                    player.restart(PLAYER_INITIAL_X, PLAYER_INITIAL_Y);
-                }// else => do nothing => since not in any new hole
+                if (!player.isInAHole()) { // if the player is not in the hole, check it
+                    if (tree.getPosition().equalsY(player.getNextStep())) {
+                        player.setInAHole(true);// yes in this time it is in a hole
+                        // find the Position of center of current hole
+                        Position holeCenter = this.holeCenter(player);
+                        // add the new Finished player at the player's current hole and draw it at the center of it
+                        finishedPlayers.add(new FinishedPlayer(PLAYER_REFERENCE, holeCenter.getX(), holeCenter.getY()));
+                        // reset the player to the starting point
+                        player.restart(PLAYER_INITIAL_X, PLAYER_INITIAL_Y);
+                    }// else => do nothing => since not in any new hole
+                }
             }
         }
 
@@ -258,6 +286,26 @@ public class World {
             }
         }
         return leftNearestTree.getPosition().midPoint(rightNeatestTree.getPosition());
+    }
+
+    /**Method signature:public int updateLevel(int numOfRunsFinished);
+     *
+     * @param numOfRunsFinished => The current runs finished
+     *
+     * Description: This method update the currentLevel of the world according to the number of runs the player finish
+     * */
+    public int updateLevel(int numOfRunsFinished){
+        int levelOutPut = LEVEL_0;
+        // If now meet the requirement for turning to next level
+        if (numOfRunsFinished == NUM_OF_RUNS_TO_NEXT_LEVEL){
+            if (this.currentLevel == LEVEL_0) {
+                levelOutPut = LEVEL_1;
+            }
+            if (this.currentLevel == LEVEL_1) {
+                levelOutPut = LEVEL_2;
+            }
+        }
+        return levelOutPut;
     }
 
 
