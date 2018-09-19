@@ -58,7 +58,8 @@ public class Player extends Sprite{
      *                          push the Player out of the Screen.
      * */
     public void update (){
-        if (!this.isContactWithSolidSprite && !this.isInAHole) {
+        //Take next step if player is not contact with any solid Sprite and not in a hole
+        if (!this.isContactWithSolidSprite&&!this.isInAHole) {
             super.getPosition().setX(nextStep.getX());
             super.getPosition().setY(nextStep.getY());
         }//else do nothing, stop here since it is a tree! LOL
@@ -139,6 +140,16 @@ public class Player extends Sprite{
      * */
     public Position getNextStep() {
         return nextStep;
+    }
+
+    /** Method signature: public boolean isContactWithSolidSprite();
+     *
+     * no argument
+     *
+     * Description: The getter of isContactWithSolidSprite
+     * */
+    public boolean isContactWithSolidSprite() {
+        return isContactWithSolidSprite;
     }
 
     /**Method signature:public void restart(float x, float y);

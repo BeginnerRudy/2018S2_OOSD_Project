@@ -99,32 +99,40 @@ public class World {
         // update the position and boundingbox of player's next position depends on input
         player.updatePlayNextMove(input);
 
-         //update the Tree Tile
+
+         //update the Tree Tile for checking contacting with player
         for (Tree tree:trees){
             tree.update(player);
-
-            /* check whether the player's nextStep position is in any hole
-            * if it is, add a FinishedPlayer to the ArrayList finishedPlayers
-            * I did this by checking whether the y coordinate of player is same as
-            * the y-coordinate of any tree, since it means they are in the same horizontal
-            * line. Because trees are assumed to be solid, thus if they are in same line,
-            * this implies that the player is in the hole.
-            */
-            if (tree.getPosition().equalsY(player.getNextStep())){
-                player.setInAHole(true);// yes in this time it is in a hole
-                // find the Position of center of current hole
-                Position holeCenter = this.holeCenter(player);
-                // add the new Finished player at the player's current hole and draw it at the center of it
-                finishedPlayers.add(new FinishedPlayer(PLAYER_REFERENCE, holeCenter.getX(), holeCenter.getY()));
-                // reset the player to the starting point
-                player.restart(PLAYER_INITIAL_X,PLAYER_INITIAL_Y );
-            }// else => do nothing => since not in any new hole
         }
 
-        // Update all the FinishedPlayer objects
+        // Update all the FinishedPlayer objects for checking contacting with player
         for (FinishedPlayer finishedPlayer:finishedPlayers){
             finishedPlayer.update(player);
         }
+
+        // if the nextStep of player does not contact with a solid tree object, check whether is the nextStep is in a hole.
+        if (!player.isContactWithSolidSprite()) {
+            for (Tree tree : trees) {
+
+                /* check whether the player's nextStep position is in any hole
+                 * if it is, add a FinishedPlayer to the ArrayList finishedPlayers
+                 * I did this by checking whether the y coordinate of player is same as
+                 * the y-coordinate of any tree, since it means they are in the same horizontal
+                 * line. Because trees are assumed to be solid, thus if they are in same line,
+                 * this implies that the player is in the hole.
+                 */
+                if (tree.getPosition().equalsY(player.getNextStep())) {
+                    player.setInAHole(true);// yes in this time it is in a hole
+                    // find the Position of center of current hole
+                    Position holeCenter = this.holeCenter(player);
+                    // add the new Finished player at the player's current hole and draw it at the center of it
+                    finishedPlayers.add(new FinishedPlayer(PLAYER_REFERENCE, holeCenter.getX(), holeCenter.getY()));
+                    // reset the player to the starting point
+                    player.restart(PLAYER_INITIAL_X, PLAYER_INITIAL_Y);
+                }// else => do nothing => since not in any new hole
+            }
+        }
+
 
         // Update all of the sprites in the game
         player.update();
