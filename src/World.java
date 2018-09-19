@@ -93,6 +93,8 @@ public class World {
 	    // set the player.isContactWithTree to false, in order to handle the case no tree contacts the player
         // while if there is a tree contacts with the player, this attribute will be set to true by that tree.update(Player player);
         player.setContactWithSolidSprite(false);
+        // set the player.isInAHole to be false, since for each frame we need to check it .
+        player.setInAHole(false);
 
         // update the position and boundingbox of player's next position depends on input
         player.updatePlayNextMove(input);
@@ -101,14 +103,15 @@ public class World {
         for (Tree tree:trees){
             tree.update(player);
 
-            /* check whether the player's current position is in any hole
+            /* check whether the player's nextStep position is in any hole
             * if it is, add a FinishedPlayer to the ArrayList finishedPlayers
             * I did this by checking whether the y coordinate of player is same as
             * the y-coordinate of any tree, since it means they are in the same horizontal
             * line. Because trees are assumed to be solid, thus if they are in same line,
             * this implies that the player is in the hole.
             */
-            if (tree.getPosition().equalsY(player.getPosition())){
+            if (tree.getPosition().equalsY(player.getNextStep())){
+                player.setInAHole(true);// yes in this time it is in a hole
                 // find the Position of center of current hole
                 Position holeCenter = this.holeCenter(player);
                 // add the new Finished player at the player's current hole and draw it at the center of it
@@ -216,24 +219,20 @@ public class World {
      *
      * */
     public Position holeCenter(Player player) throws SlickException{
-        // leftNearest is initialized in a special way.
-        // The difference between the x-coordinate of the center of both
-        // leftNearestTree and player must larger than two STEP_SIZE,
-        // since if it is not, the player
+        // The initial tree object has no effect on selecting tree later, only the
+        // minLeftDistance and  minRightDistance does, thus set the position to same random number
         Tree leftNearestTree = new Tree(TREE_REFERENCE,
-                player.getPosition().getX() - 10*Player.STEP_SIZE,
-                player.getPosition().getY());
+                (float) Math.random(), (float) Math.random());
         Tree rightNeatestTree = new Tree(TREE_REFERENCE,
-                player.getPosition().getX() +  2*Player.STEP_SIZE,
-                player.getPosition().getY());
+                (float) Math.random(), (float) Math.random());
         float minLeftDistance = App.SCREEN_WIDTH; // since the min distance must less the SCREEN_WIDTH, it is safe to do this
         float minRightDistance = App.SCREEN_WIDTH;// same reason as above
 
         for (Tree tree:trees){
-            // only find trees in the domain of tree has same y-coordinate with player
-            if (tree.getPosition().equalsY(player.getPosition())){
-                // get the current distance
-                float distance = tree.getPosition().getX() - player.getPosition().getX();
+            // only find trees in the domain of tree has same y-coordinate with player's nextStep
+            if (tree.getPosition().equalsY(player.getNextStep())){
+                // get the current distance between this tree and play's nextStep
+                float distance = tree.getPosition().getX() - player.getNextStep().getX();
                 // negative means tree is on the left of the player
                 if (distance < 0){
                     if ((distance = Math.abs(distance)) < minLeftDistance){

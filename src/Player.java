@@ -6,6 +6,7 @@ import utilities.BoundingBox;
 public class Player extends Sprite{
     public static final float STEP_SIZE = 48;
     private boolean isContactWithSolidSprite;
+    private boolean isInAHole;
     private Position nextStep;
     private BoundingBox nextStepBB;
 
@@ -16,6 +17,7 @@ public class Player extends Sprite{
         nextStep = new Position(x, y); // Initialize the next step Position to the start position
                                         // due to that there is no information about next step as game just started
         isContactWithSolidSprite = false;
+        isInAHole = false;
         nextStepBB = new BoundingBox(new Image(imgSrc), x, y);
     }
 
@@ -56,12 +58,11 @@ public class Player extends Sprite{
      *                          push the Player out of the Screen.
      * */
     public void update (){
-        if (!this.isContactWithSolidSprite) {
+        if (!this.isContactWithSolidSprite && !this.isInAHole) {
             super.getPosition().setX(nextStep.getX());
             super.getPosition().setY(nextStep.getY());
-        }else{
-            //do nothing, stop here since it is a tree! LOL
-        }
+        }//else do nothing, stop here since it is a tree! LOL
+
 
         // update the bounding box
         super.getBoundingBox().setX(super.getPosition().getX());
@@ -72,6 +73,11 @@ public class Player extends Sprite{
     // The setter for the attribute isContactWithTree
     public void setContactWithSolidSprite(boolean isContactWithSolidSprite) {
         this.isContactWithSolidSprite = isContactWithSolidSprite;
+    }
+
+    // The setter for the attribute isInAHole
+    public void setInAHole(boolean inAHole) {
+        isInAHole = inAHole;
     }
 
     /**
@@ -117,12 +123,22 @@ public class Player extends Sprite{
 
     /** Method signature: public BoundingBox getNextStepBB();
      *
-     * @param => no argument
+     * no argument
      *
      * Description: The getter of NextStepBB
      * */
     public BoundingBox getNextStepBB() {
         return nextStepBB;
+    }
+
+    /** Method signature: public Position getNextStep();
+     *
+     * no argument
+     *
+     * Description: The getter of nextPosition
+     * */
+    public Position getNextStep() {
+        return nextStep;
     }
 
     /**Method signature:public void restart(float x, float y);
