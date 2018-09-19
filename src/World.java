@@ -104,18 +104,27 @@ public class World {
 	public void update(Input input, int delta)  throws SlickException {
 	    // check is it the time to turn to next level
         int numOfRunsFinished = finishedPlayers.size();
-        System.out.println(numOfRunsFinished);
-        this.currentLevel = this.updateLevel(numOfRunsFinished);
+        boolean isFinishedAll = (numOfRunsFinished == NUM_OF_RUNS_TO_NEXT_LEVEL);
 
-        // swap to new level according to current level
-        if (this.currentLevel == LEVEL_2){
-            System.exit(0);
-        }else if (this.currentLevel == LEVEL_1){
-            System.out.println(2);
-        }else if(this.currentLevel == LEVEL_0){
-            // do nothing, since we start with level 0.
+        // if current level is finished, turn to next level
+        if (isFinishedAll) {
+            this.currentLevel = this.updateLevel(isFinishedAll);
+
+            // swap to new level according to current level
+            if (this.currentLevel == LEVEL_2) {
+                System.exit(0);
+            } else if (this.currentLevel == LEVEL_1) {
+//            System.out.println(2);
+                // reinitialize all the Tiles, Vehicles, FinishedPlayers and ExtraLife from current "background"
+                waters = new ArrayList<>();
+                grasses = new ArrayList<>();
+                trees = new ArrayList<>();
+                finishedPlayers = new ArrayList<>();
+                this.createTheBackground(LEVEL1_REFERENCE);
+            } else if (this.currentLevel == LEVEL_0) {
+                // do nothing, since we start with level 0.
+            }
         }
-
 	    // set the player.isContactWithTree to false, in order to handle the case no tree contacts the player
         // while if there is a tree contacts with the player, this attribute will be set to true by that tree.update(Player player);
         player.setContactWithSolidSprite(false);
@@ -290,14 +299,14 @@ public class World {
 
     /**Method signature:public int updateLevel(int numOfRunsFinished);
      *
-     * @param numOfRunsFinished => The current runs finished
+     * @param isFinished => The boolean for whether current level is finished
      *
      * Description: This method update the currentLevel of the world according to the number of runs the player finish
      * */
-    public int updateLevel(int numOfRunsFinished){
+    public int updateLevel(boolean isFinished){
         int levelOutPut = LEVEL_0;
         // If now meet the requirement for turning to next level
-        if (numOfRunsFinished == NUM_OF_RUNS_TO_NEXT_LEVEL){
+        if (isFinished){
             if (this.currentLevel == LEVEL_0) {
                 levelOutPut = LEVEL_1;
             }
