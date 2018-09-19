@@ -70,11 +70,13 @@ public class World {
     // declare the player
     private Player player;
     // The ArrayList of Type Water to store Water Tile in the world
-    private ArrayList<Water> waters = new ArrayList<Water>();
+    private ArrayList<Water> waters = new ArrayList<>();
     // The ArrayList of Type Water to store Water Tile in the world
-    private ArrayList<Grass> grasses = new ArrayList<Grass>();
+    private ArrayList<Grass> grasses = new ArrayList<>();
     // The ArrayList of Type Water to store Water Tile in the world
-    private ArrayList<Tree> trees = new ArrayList<Tree>();
+    private ArrayList<Tree> trees = new ArrayList<>();
+    // The ArrayList of Type FinishedPlayer to store Water Tile in the world
+    private ArrayList<FinishedPlayer> finishedPlayers = new ArrayList<>();
 
 	public World() throws SlickException {
         // initialize the background of the world of level1
@@ -87,10 +89,10 @@ public class World {
         player = new Player(PLAYER_REFERENCE, PLAYER_INITIAL_X, PLAYER_INITIAL_Y);
 	}
 	
-	public void update(Input input, int delta) {
+	public void update(Input input, int delta)  throws SlickException {
 	    // set the player.isContactWithTree to false, in order to handle the case no tree contacts the player
         // while if there is a tree contacts with the player, this attribute will be set to true by that tree.update(Player player);
-        player.setContactWithTree(false);
+        player.setContactWithSolidSprite(false);
 
         // update the position and boundingbox of player's next position depends on input
         player.updatePlayNextMove(input);
@@ -98,6 +100,22 @@ public class World {
          //update the Tree Tile
         for (Tree tree:trees){
             tree.update(player);
+
+            /* check whether the player's current position is in any hole
+            * if it is, add a FinishedPlayer to the ArrayList finishedPlayers
+            * I did this by checking whether the y coordinate of player is same as
+            * the y-coordinate of any tree, since it means they are in the same horizontal
+            * line. Because trees are assumed to be solid, thus if they are in same line,
+            * this implies that the player is in the hole.
+            */
+            if (tree.getPosition().equalsY(player.getPosition())){
+                // find the Position of center of current hole
+
+                // add the new Finished player at the player's current hole and draw it at the center of it
+                finishedPlayers.add(new FinishedPlayer(PLAYER_REFERENCE, PLAYER_INITIAL_X, PLAYER_INITIAL_Y));
+                // reset the player to the starting point
+                player.restart(PLAYER_INITIAL_X,PLAYER_INITIAL_Y );
+            }// else => do nothing => since not in any new hole
         }
 
 

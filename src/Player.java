@@ -125,5 +125,15 @@ public class Player extends Sprite{
         return nextStepBB;
     }
 
-
+    /**Method signature:public void restart(float x, float y);
+     *
+     * @param x => The given restart x position
+     * @param y => The given restart y position
+     *
+     * Description: This method would reset the player's position to the given restart position.
+     * */
+    public void restart(float x, float y){
+        super.getPosition().setX(x);
+        super.getPosition().setY(y);
+    }
 }
