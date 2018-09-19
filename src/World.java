@@ -72,6 +72,8 @@ public class World {
     private static final String GRASS = "grass";
     // the csv identifier for water
     private static final String TREE = "tree";
+    // the hashMap key for FinishedPLayer
+    private static final String FINISHED_PLAYER = "FinishedPlayer";
 
 
 
@@ -80,39 +82,28 @@ public class World {
     private Player player;
     // declare the current level of the world
     private int currentLevel;
-    // The ArrayList of Type Water to store Water Tile in the world
-    private ArrayList<Water> waters = new ArrayList<>();
-    // The ArrayList of Type Water to store Water Tile in the world
-    private ArrayList<Grass> grasses = new ArrayList<>();
-    // The ArrayList of Type Water to store Water Tile in the world
-    private ArrayList<Tree> trees = new ArrayList<>();
-    // The ArrayList of Type FinishedPlayer to store Water Tile in the world
-    private ArrayList<FinishedPlayer> finishedPlayers = new ArrayList<>();
     // The HashMap with (String, ArrayList<Sprite>) to represent the "background" for level
     private HashMap<String, ArrayList<Sprite>> background = new HashMap<>();
-
-    private Tree t;
 
 	public World() throws SlickException {
         // initialize the background of the world of level1
         // This background contains all the objects used in this game.
         // More details in the description  of method createTheBackground
-        this.createTheBackground(LEVEL0_REFERENCE);
+        background = this.createTheBackground(LEVEL0_REFERENCE);
 
         // begin with level 0
         this.currentLevel = LEVEL_0;
         //initialize the player
         player = new Player(PLAYER_REFERENCE, PLAYER_INITIAL_X, PLAYER_INITIAL_Y);
 
-
-        background.put(TREE, new ArrayList<>());
-        background.get(TREE).add(new Tree(TREE_REFERENCE, 500, 500));
-        t = new Tree((Tree) background.get(TREE).get(0));
 	}
 	
 	public void update(Input input, int delta)  throws SlickException {
 	    // check is it the time to turn to next level
-        int numOfRunsFinished = finishedPlayers.size();
+        int numOfRunsFinished = 0;
+        if (background.get(FINISHED_PLAYER)!=null) {
+            numOfRunsFinished = background.get(FINISHED_PLAYER).size();
+        }
         boolean isFinishedAll = (numOfRunsFinished == NUM_OF_RUNS_TO_NEXT_LEVEL);
 
         // if current level is finished, turn to next level
@@ -125,11 +116,8 @@ public class World {
             } else if (this.currentLevel == LEVEL_1) {
 //            System.out.println(2);
                 // reinitialize all the Tiles, Vehicles, FinishedPlayers and ExtraLife from current "background"
-                waters = new ArrayList<>();
-                grasses = new ArrayList<>();
-                trees = new ArrayList<>();
-                finishedPlayers = new ArrayList<>();
-                this.createTheBackground(LEVEL1_REFERENCE);
+                background = new HashMap<>();
+                background = this.createTheBackground(LEVEL1_REFERENCE);
             } else if (this.currentLevel == LEVEL_0) {
                 // do nothing, since we start with level 0.
             }
@@ -143,22 +131,24 @@ public class World {
         // update the position and boundingbox of player's next position depends on input
         player.updatePlayNextMove(input);
 
-        t.update(player);
-
          //update the Tree Tile for checking contacting with player
-        for (Tree tree:trees){
+        for (Sprite sprite:background.get(TREE)){
+            Tree tree = (Tree) sprite;
             tree.update(player);
         }
 
         // Update all the FinishedPlayer objects for checking contacting with player
-        for (FinishedPlayer finishedPlayer:finishedPlayers){
-            finishedPlayer.update(player);
+        if (background.get(FINISHED_PLAYER)!=null) {
+            for (Sprite sprite : background.get(FINISHED_PLAYER)) {
+                FinishedPlayer finishedPlayer = (FinishedPlayer) sprite;
+                finishedPlayer.update(player);
+            }
         }
 
         // if the nextStep of player does not contact with a solid tree object, check whether is the nextStep is in a hole.
         if (!player.isContactWithSolidSprite()) {
-            for (Tree tree : trees) {
-
+            for (Sprite sprite : background.get(TREE)) {
+                Tree tree = (Tree) sprite;
                 /* check whether the player's nextStep position is in any hole
                  * if it is, add a FinishedPlayer to the ArrayList finishedPlayers
                  * I did this by checking whether the y coordinate of player is same as
@@ -172,7 +162,8 @@ public class World {
                         // find the Position of center of current hole
                         Position holeCenter = this.holeCenter(player);
                         // add the new Finished player at the player's current hole and draw it at the center of it
-                        finishedPlayers.add(new FinishedPlayer(PLAYER_REFERENCE, holeCenter.getX(), holeCenter.getY()));
+                        background.putIfAbsent(FINISHED_PLAYER, new ArrayList<>());
+                        background.get(FINISHED_PLAYER).add(new FinishedPlayer(PLAYER_REFERENCE, holeCenter.getX(), holeCenter.getY()));
                         // reset the player to the starting point
                         player.restart(PLAYER_INITIAL_X, PLAYER_INITIAL_Y);
                     }// else => do nothing => since not in any new hole
@@ -198,19 +189,20 @@ public class World {
 	
 	public void render(Graphics g) {
 		// Draw all of the sprites in the game
-        t.render();
         //draw the Water Tiles
-        SpritesRender(waters);
+        SpritesRender(background.get(WATER));
 
         //draw the Grass Tiles
-        SpritesRender(grasses);
+        SpritesRender(background.get(GRASS));
 
         //draw the Tree Tiles
-        SpritesRender(trees);
+
+        SpritesRender(background.get(TREE));
 
         //draw the FinishedPlayer sprites
-        SpritesRender(finishedPlayers);
-
+        if (background.get(FINISHED_PLAYER)!=null) {
+            SpritesRender(background.get(FINISHED_PLAYER));
+        }
         // draw the player
         player.render();
 	}
@@ -221,10 +213,11 @@ public class World {
      *
      *  Description: This is a generic methods that calls the render method for each sprite in an arrayList of Sprite
      * */
-	private static <T extends Sprite> void SpritesRender(ArrayList<T> sprites){
+	private static <T extends Sprite> void SpritesRender(ArrayList<Sprite> sprites){
         // draw all the sprite of type T
-        for (T sprite:sprites){
-            sprite.render();
+        for (Sprite sprite:sprites){
+            T subclassOfSprite = (T) sprite;
+            subclassOfSprite.render();
         }
     }
 
@@ -250,16 +243,15 @@ public class World {
 
                 // create Tile object, if the description contains 3 values
                 if (description.length == NUM_OF_VALUES_OF_TILE){
-                    // create the Water Tile object
-                    this.addSpriteIntoBackground(WATER, background, new Water(WATER_REFERENCE, x, y));
+                    // add the Water Tile object
                     if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(WATER)){
-                        waters.add(new Water(WATER_REFERENCE, x, y));
-                    }// create the Grass Tile object
+                        this.addSpriteIntoBackground(WATER, output, new Water(WATER_REFERENCE, x, y));
+                    }// add the Grass Tile object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(GRASS)){
-                        grasses.add(new Grass(GRASS_REFERENCE, x, y));
-                    }// create the Tree Tile object
+                        this.addSpriteIntoBackground(GRASS, output, new Grass(GRASS_REFERENCE, x, y));
+                    }// add the Tree Tile object
                     if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(TREE)){
-                        trees.add(new Tree(TREE_REFERENCE, x, y));
+                        this.addSpriteIntoBackground(TREE, output, new Tree(TREE_REFERENCE, x, y));
                     }
                 }// create Vehicle object, if the description contains 4 values
                 else if (description.length == NUM_OF_VALUES_OF_VEHICLE){
@@ -269,6 +261,7 @@ public class World {
         }catch (Exception e){
             e.printStackTrace();
         }
+        return output;
     }
 
     /**
@@ -285,7 +278,8 @@ public class World {
         float minLeftDistance = App.SCREEN_WIDTH; // since the min distance must less the SCREEN_WIDTH, it is safe to do this
         float minRightDistance = App.SCREEN_WIDTH;// same reason as above
 
-        for (Tree tree:trees){
+        for (Sprite sprite:background.get(TREE)){
+            Tree tree = (Tree) sprite;
             // only find trees in the domain of tree has same y-coordinate with player's nextStep
             if (tree.getPosition().equalsY(player.getNextStep())){
                 // get the current distance between this tree and play's nextStep
