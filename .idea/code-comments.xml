@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CodeComments">
-    <comments />
+    <comments>
+      <comment>
+        <place path="src/Player.java" from="3465" to="3465" />
+        <text />
+        <data>a new line of commnet</data>
+      </comment>
+    </comments>
   </component>
 </project>

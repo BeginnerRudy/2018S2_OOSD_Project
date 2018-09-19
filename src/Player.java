@@ -3,13 +3,19 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import utilities.BoundingBox;
 
+import java.util.ArrayList;
+
 public class Player extends Sprite{
     public static final float STEP_SIZE = 48;
+    public static final int INITIAL_NUMBER_OF_LIVES = 3; //The number of lives that player has while starting game
+    public static final int MIN_NUM_OF_LIFE_TO_PLAY = 1; //The minimun number of lives needed to play
     private boolean isContactWithSolidSprite;
     private boolean isInAHole;
+    private boolean isKilled;
+    private boolean isGameOver;
     private Position nextStep;
     private BoundingBox nextStepBB;
-
+    private ArrayList<Life> lives;
 
     // The constructor of Player
     public Player(String imgSrc, float x, float y) throws SlickException{
@@ -18,7 +24,10 @@ public class Player extends Sprite{
                                         // due to that there is no information about next step as game just started
         isContactWithSolidSprite = false;
         isInAHole = false;
+        isKilled = false;
+        isGameOver = false;
         nextStepBB = new BoundingBox(new Image(imgSrc), x, y);
+        lives = new ArrayList<>();
     }
 
     // overloading the render method here
@@ -58,8 +67,8 @@ public class Player extends Sprite{
      *                          push the Player out of the Screen.
      * */
     public void update (){
-        //Take next step if player is not contact with any solid Sprite and not in a hole
-        if (!this.isContactWithSolidSprite&&!this.isInAHole) {
+        //Take next step if player is not contact with any solid Sprite and not in a hole and not get killed
+        if (!this.isContactWithSolidSprite&&!this.isInAHole&&!this.isKilled) {
             super.getPosition().setX(nextStep.getX());
             super.getPosition().setY(nextStep.getY());
         }//else do nothing, stop here since it is a tree! LOL
@@ -70,16 +79,47 @@ public class Player extends Sprite{
         super.getBoundingBox().setY(super.getPosition().getY());
     }
 
-
-    // The setter for the attribute isContactWithTree
+    /** Method signature: public void setContactWithSolidSprite(boolean isContactWithSolidSprite);
+     *
+     * @param isContactWithSolidSprite The given boolean value to set
+     *
+     * Description: The setter for the attribute isContactWithTree
+     * */
     public void setContactWithSolidSprite(boolean isContactWithSolidSprite) {
         this.isContactWithSolidSprite = isContactWithSolidSprite;
     }
 
-    // The setter for the attribute isInAHole
+    /** Method signature: public void setInAHole(boolean inAHole)
+     *
+     * @param inAHole The given boolean value to set
+     *
+     * Description: The setter for the attribute isInAHole
+     * */
+
     public void setInAHole(boolean inAHole) {
         isInAHole = inAHole;
     }
+
+    /** Method signature: public void setKilled(boolean killed)
+     *
+     * @param killed The given boolean value to set
+     *
+     * Description: The setter for the attribute isKilled
+     * */
+    public void setKilled(boolean killed) {
+        isKilled = killed;
+    }
+
+    /** Method signature: public void setGameOver(boolean gameOver)
+     *
+     * @param gameOver The given boolean value to set
+     *
+     * Description: The setter for the attribute isGameOver
+     * */
+    public void setGameOver(boolean gameOver) {
+        isGameOver = gameOver;
+    }
+
 
     /**
      * Method Signature:  private Position move(Input input);
@@ -160,6 +200,37 @@ public class Player extends Sprite{
      * */
     public boolean isInAHole() {
         return isInAHole;
+    }
+
+    /** Method signature: public boolean isKilled();
+     *
+     * no argument
+     *
+     * Description: The getter of isKilled
+     * */
+    public boolean isKilled() {
+        return isKilled;
+    }
+
+    /** Method signature: public ArrayList<Life> getLives();
+     *
+     * no argument
+     *
+     * Description: The getter of lives
+     * */
+    public ArrayList<Life> getLives() {
+        return lives;
+    }
+
+
+    /** Method signature: public boolean isGameOver();
+     *
+     * no argument
+     *
+     * Description: The getter of isGameOver
+     * */
+    public boolean isGameOver() {
+        return isGameOver;
     }
 
     /**Method signature:public void restart(float x, float y);

@@ -95,6 +95,10 @@ public class World {
         this.currentLevel = LEVEL_0;
         //initialize the player
         player = new Player(PLAYER_REFERENCE, PLAYER_INITIAL_X, PLAYER_INITIAL_Y);
+        //initialize the lives of player
+        for (int i=0; i<Player.INITIAL_NUMBER_OF_LIVES; i++){
+            player.getLives().add(new Life(LIVES_REFERENCE, Life.INITIAL_X_POSITION+i*Life.THE_GAP, Life.INITIAL_Y_POSITION));
+        }
 
 	}
 	
@@ -114,7 +118,6 @@ public class World {
             if (this.currentLevel == LEVEL_2) {
                 System.exit(0);
             } else if (this.currentLevel == LEVEL_1) {
-//            System.out.println(2);
                 // reinitialize all the Tiles, Vehicles, FinishedPlayers and ExtraLife from current "background"
                 background = new HashMap<>();
                 background = this.createTheBackground(LEVEL1_REFERENCE);
@@ -127,11 +130,13 @@ public class World {
         player.setContactWithSolidSprite(false);
         // set the player.isInAHole to be false, since for each frame we need to check it .
         player.setInAHole(false);
+        // set the player.isKilled to be false, since for each frame we need to check it .
+        player.setKilled(false);
 
         // update the position and boundingbox of player's next position depends on input
         player.updatePlayNextMove(input);
 
-         //update the Tree Tile for checking contacting with player
+        //update the Tree Tile for checking contacting with player
         for (Sprite sprite:background.get(TREE)){
             Tree tree = (Tree) sprite;
             tree.update(player);
@@ -171,6 +176,28 @@ public class World {
             }
         }
 
+        //update whether the player is killed
+        //update killable waters
+        for (Sprite sprite:background.get(WATER)){
+            Water water = (Water) sprite;
+            water.update(player);
+        }
+
+
+        // update the position of player if it is killed
+        if (player.isKilled()) {
+            if (player.getLives() != null) {
+                if (player.getLives().size() > Player.MIN_NUM_OF_LIFE_TO_PLAY) {
+                    // remove the leftmost life
+                    player.getLives().remove(player.getLives().size() - 1);
+                    //restart the player's position
+                    player.restart(PLAYER_INITIAL_X, PLAYER_INITIAL_Y);
+                }else{// not enough life to play, GameOver
+                    player.setGameOver(true);
+                    System.exit(0);
+                }
+            }
+        }
 
         // Update all of the sprites in the game
         player.update();
@@ -196,12 +223,18 @@ public class World {
         SpritesRender(background.get(GRASS));
 
         //draw the Tree Tiles
-
         SpritesRender(background.get(TREE));
 
         //draw the FinishedPlayer sprites
         if (background.get(FINISHED_PLAYER)!=null) {
             SpritesRender(background.get(FINISHED_PLAYER));
+        }
+
+        // draw the lives
+        if (player.getLives()!=null) {
+            for (Life life : player.getLives()) {
+                life.render();
+            }
         }
         // draw the player
         player.render();

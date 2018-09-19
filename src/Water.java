@@ -5,22 +5,17 @@ public class Water extends Tile implements Killable{
         super(imageSrc, x, y);
     }
 
-    /**Method signature: public Water(Water copy);
-     *
-     * @param copy The reference to copy
-     *
-     * Description: This a copy constructor for Water
-     * */
-    public Water(Water copy){
-        super(copy);
-    }
 
-    /**
-     * The function to make player die if it contacts with Grass tile
+    /** Method signature: public void update(Player player);
      *
+     * @param player => The reference to player
+     *
+     * Description: This method update the player.isKilled
+     *              according to whether water contact with the player.
+     *              If it does, set this attribute to true.
+     *              Otherwise, do nothing.
      * */
-    @Override
-    public void killPlayer(Player player){
-        // kill the player => -1 life from player
+    public void update(Player player){
+        killPlayer(player, this);
     }
 }
