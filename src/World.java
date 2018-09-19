@@ -74,8 +74,24 @@ public class World {
     private static final String TREE = "tree";
     // the hashMap key for FinishedPLayer
     private static final String FINISHED_PLAYER = "FinishedPlayer";
+    // the csv identifier for BUS
+    private static final String BUS = "bus";
+    // the csv identifier for RACECAR
+    private static final String RACECAR = "racecar";
+    // the csv identifier for BIKE
+    private static final String BIKE = "bike";
+    // the csv identifier for BULLDOZER
+    private static final String BULLDOZER = "bulldozer";
 
 
+    // The speed of vehicle bus
+    private static final float BUS_SPEED = 0.15f;
+    // The speed of vehicle racecar
+    private static final float RACECAR_SPEED = 0.5f;
+    // The speed of vehicle bike
+    private static final float BIKE_SPEED = 0.2f;
+    // The speed of vehicle bulldozer
+    private static final float BULLDOZER_SPEED = 0.05f;
 
     /*Define Sprites and Background*/
     // declare the player
@@ -138,15 +154,30 @@ public class World {
 
         //update the Tree Tile for checking contacting with player
         for (Sprite sprite:background.get(TREE)){
-            Tree tree = (Tree) sprite;
-            tree.update(player);
+            if (!player.isContactWithSolidSprite()) { // If the player is not contacted with solidable objects yet, check it out.
+                Tree tree = (Tree) sprite;
+                tree.update(player);
+            }
         }
 
         // Update all the FinishedPlayer objects for checking contacting with player
         if (background.get(FINISHED_PLAYER)!=null) {
             for (Sprite sprite : background.get(FINISHED_PLAYER)) {
-                FinishedPlayer finishedPlayer = (FinishedPlayer) sprite;
-                finishedPlayer.update(player);
+                if (!player.isContactWithSolidSprite()) { // If the player is not contacted with solidable objects yet, check it out.
+                    FinishedPlayer finishedPlayer = (FinishedPlayer) sprite;
+                    finishedPlayer.update(player);
+                }
+            }
+        }
+
+        // update all Bulldozer objects
+        if (background.get(BULLDOZER)!=null) {
+            for (Sprite sprite : background.get(BULLDOZER)) {
+                Bulldozer bulldozer = (Bulldozer) sprite;
+                bulldozer.update(delta);
+                if (!player.isContactWithSolidSprite()) { // If the player is not contacted with solidable objects yet, check it out.
+                    bulldozer.updateSolidBehaviour(player);
+                }
             }
         }
 
@@ -179,8 +210,39 @@ public class World {
         //update whether the player is killed
         //update killable waters
         for (Sprite sprite:background.get(WATER)){
-            Water water = (Water) sprite;
-            water.update(player);
+            if (!player.isKilled()) { // If the player is not killed yet, check it out.
+                Water water = (Water) sprite;
+                water.update(player);
+            }
+        }
+
+        // update all Bus objects
+        if (background.get(BUS)!=null) {
+            for (Sprite sprite : background.get(BUS)) {
+                if (!player.isKilled()) { // If the player is not killed yet, check it out.
+                    Bus bus = (Bus) sprite;
+                    bus.update(delta);
+                }
+            }
+        }
+
+        // update all Racecar objects
+        if (background.get(RACECAR)!=null) {
+            for (Sprite sprite : background.get(RACECAR)) {
+                if (!player.isKilled()) { // If the player is not killed yet, check it out.
+                    Racecar racecar = (Racecar) sprite;
+                    racecar.update(delta);
+                }
+            }
+        }
+        // update all Bike objects
+        if (background.get(BIKE)!=null) {
+            for (Sprite sprite : background.get(BIKE)) {
+                if (!player.isKilled()) { // If the player is not killed yet, check it out.
+                    Bike bike = (Bike) sprite;
+                    bike.update(delta);
+                }
+            }
         }
 
 
@@ -198,6 +260,7 @@ public class World {
                 }
             }
         }
+
 
         // Update all of the sprites in the game
         player.update();
@@ -226,9 +289,7 @@ public class World {
         SpritesRender(background.get(TREE));
 
         //draw the FinishedPlayer sprites
-        if (background.get(FINISHED_PLAYER)!=null) {
-            SpritesRender(background.get(FINISHED_PLAYER));
-        }
+        SpritesRender(background.get(FINISHED_PLAYER));
 
         // draw the lives
         if (player.getLives()!=null) {
@@ -236,6 +297,19 @@ public class World {
                 life.render();
             }
         }
+
+        // draw the buses
+        SpritesRender(background.get(BUS));
+
+        // draw the racecars
+        SpritesRender(background.get(RACECAR));
+
+        // draw the bikes
+        SpritesRender(background.get(BIKE));
+
+        // draw the bulldozers
+        SpritesRender(background.get(BULLDOZER));
+
         // draw the player
         player.render();
 	}
@@ -247,10 +321,14 @@ public class World {
      *  Description: This is a generic methods that calls the render method for each sprite in an arrayList of Sprite
      * */
 	private static <T extends Sprite> void SpritesRender(ArrayList<Sprite> sprites){
-        // draw all the sprite of type T
-        for (Sprite sprite:sprites){
-            T subclassOfSprite = (T) sprite;
-            subclassOfSprite.render();
+	    if (sprites!=null) {
+            // draw all the sprite of type T
+            for (Sprite sprite : sprites) {
+                T subclassOfSprite = (T) sprite;
+                subclassOfSprite.render();
+            }
+        }else{
+	        // do nothing, since nothing to draw
         }
     }
 
@@ -283,11 +361,25 @@ public class World {
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(GRASS)){
                         this.addSpriteIntoBackground(GRASS, output, new Grass(GRASS_REFERENCE, x, y));
                     }// add the Tree Tile object
-                    if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(TREE)){
+                    else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(TREE)){
                         this.addSpriteIntoBackground(TREE, output, new Tree(TREE_REFERENCE, x, y));
                     }
                 }// create Vehicle object, if the description contains 4 values
                 else if (description.length == NUM_OF_VALUES_OF_VEHICLE){
+                    boolean isMoveToRight = Boolean.parseBoolean(description[INDEX_OF_DIRECTION]);
+                    // add the Bus object
+                    if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(BUS)){
+                        this.addSpriteIntoBackground(BUS, output, new Bus(BUS_REFERENCE, x, y, BUS_SPEED, isMoveToRight));
+                    }// add the Racecar object
+                    else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(RACECAR)){
+                        this.addSpriteIntoBackground(RACECAR, output, new Racecar(RACECAR_REFERENCE, x, y, RACECAR_SPEED, isMoveToRight));
+                    }// add the Bike object
+                    else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(BIKE)){
+                        this.addSpriteIntoBackground(BIKE, output, new Bike(BIKE_REFERENCE, x, y, BIKE_SPEED, isMoveToRight));
+                    }// add the Bulldozer object
+                    else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(BULLDOZER)){
+                        this.addSpriteIntoBackground(BULLDOZER, output, new Bulldozer(BULLDOZER_REFERENCE, x, y, BULLDOZER_SPEED, isMoveToRight));
+                    }
 
                 }
             }
