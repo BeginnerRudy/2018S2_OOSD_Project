@@ -1,34 +1,17 @@
+import org.lwjgl.Sys;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
+
 
 public class World {
     /*Define CONSTANT*/
 
-    // define the image reference of grass
-    private static final String GRASS_REFERENCE = "assets/grass.png";
-    // define the image reference of water
-    private static final String WATER_REFERENCE = "assets/water.png";
-    // define the image reference of tree
-    private static final String TREE_REFERENCE = "assets/tree.png";
     // define the image reference of player
     private static final String PLAYER_REFERENCE = "assets/frog.png";
-    // define the image reference of bus
-    private static final String BUS_REFERENCE = "assets/bus.png";
-    // define the image reference of bike
-    private static final String BIKE_REFERENCE = "assets/bike.png";
-    // define the image reference of racecar
-    private static final String RACECAR_REFERENCE = "assets/racecar.png";
-    // define the image reference of log
-    private static final String LOG_REFERENCE = "assets/log.png";
-    // define the image reference of longlog
-    private static final String LONGLOG_REFERENCE = "assets/longlog.png";
-    // define the image reference of turtles
-    private static final String TURTLES_REFERENCE = "assets/turtles.png";
     // define the image reference of lives
     private static final String LIVES_REFERENCE = "assets/lives.png";
     // define the image reference of extra life
@@ -88,19 +71,8 @@ public class World {
     private static final String TURTLE = "turtle";
 
 
-    // The speed of vehicle bus
-    private static final float BUS_SPEED = 0.15f;
-    // The speed of vehicle racecar
-    private static final float RACECAR_SPEED = 0.5f;
-    // The speed of vehicle bike
-    private static final float BIKE_SPEED = 0.2f;
 
-    // The speed of vehicle log
-    private static final float LOG_SPEED = 0.1f;
-    // The speed of vehicle longlog
-    private static final float LONGLOG_SPEED = 0.07f;
-    // The speed of vehicle turtle
-    private static final float TURTLE_SPEED = 0.085f;
+
     // The x-coordinate for bike to reverse direction
     private static final float BIKE_REVERSE_24 = 24f;
     private static final float BIKE_REVERSE_1000 = 1000f;
@@ -175,7 +147,7 @@ public class World {
         //update the Tree Tile for checking contacting with player
         for (Sprite sprite:background.get(TREE)){
             if (!player.isContactWithSolidSprite()) { // If the player is not contacted with solidable objects yet, check it out.
-                Tree tree = (Tree) sprite;
+                SoliableTile tree = (SoliableTile) sprite;
                 tree.update(player);
             }
         }
@@ -204,7 +176,7 @@ public class World {
         // if the nextStep of player does not contact with a solid tree object, check whether is the nextStep is in a hole.
         if (!player.isContactWithSolidSprite()) {
             for (Sprite sprite : background.get(TREE)) {
-                Tree tree = (Tree) sprite;
+                SoliableTile tree = (SoliableTile) sprite;
                 /* check whether the player's nextStep position is in any hole
                  * if it is, add a FinishedPlayer to the ArrayList finishedPlayers
                  * I did this by checking whether the y coordinate of player is same as
@@ -231,7 +203,7 @@ public class World {
         //update killable waters
 //        for (Sprite sprite:background.get(WATER)){
 //            if (!player.isKilled()) { // If the player is not killed yet, check it out.
-//                Water water = (Water) sprite;
+//                KillableTile water = (KillableTile) sprite;
 //                water.update(player);
 //            }
 //        }
@@ -239,7 +211,7 @@ public class World {
         // update all Bus objects
         if (background.get(BUS)!=null) {
             for (Sprite sprite : background.get(BUS)) {
-                Bus bus = (Bus) sprite;
+                KillableVehicle bus = (KillableVehicle) sprite;
                 bus.update(delta);
                 if (!player.isKilled()) { // If the player is not killed yet, check it out.
                    bus.updateKillableBehaviour(player);
@@ -250,7 +222,7 @@ public class World {
         // update all Racecar objects
         if (background.get(RACECAR)!=null) {
             for (Sprite sprite : background.get(RACECAR)) {
-                Racecar racecar = (Racecar) sprite;
+                KillableVehicle racecar = (KillableVehicle) sprite;
                 racecar.update(delta);
                 // update the direction
                 if (!player.isKilled()) { // If the player is not killed yet, check it out.
@@ -261,12 +233,12 @@ public class World {
         // update all Bike objects
         if (background.get(BIKE)!=null) {
             for (Sprite sprite : background.get(BIKE)) {
-                Bike bike = (Bike) sprite;
-                bike.update(delta);
+                KillableVehicle bike = (KillableVehicle) sprite;
                 if (bike.getPosition().getX() < BIKE_REVERSE_24||
                         bike.getPosition().getX() > BIKE_REVERSE_1000){
                     bike.setMoveToRight(!bike.isMoveToRight());
                 }
+                bike.update(delta);
 
                 if (!player.isKilled()) { // If the player is not killed yet, check it out.
                     bike.updateKillableBehaviour(player);
@@ -293,7 +265,7 @@ public class World {
         // update all Log objects
         if (background.get(LOG)!=null) {
             for (Sprite sprite : background.get(LOG)) {
-                Log log = (Log) sprite;
+                RideableVehicle log = (RideableVehicle) sprite;
                 log.update(delta);
             }
         }
@@ -301,7 +273,7 @@ public class World {
         // update all LongLog objects
         if (background.get(LONGLOG)!=null) {
             for (Sprite sprite : background.get(LONGLOG)) {
-                Longlog longlog = (Longlog) sprite;
+                RideableVehicle longlog = (RideableVehicle) sprite;
                 longlog.update(delta);
             }
         }
@@ -309,7 +281,7 @@ public class World {
         // update all Log objects
         if (background.get(TURTLE)!=null) {
             for (Sprite sprite : background.get(TURTLE)) {
-                Turtle turtle = (Turtle) sprite;
+                RideableVehicle turtle = (RideableVehicle) sprite;
                 turtle.update(delta);
             }
         }
@@ -329,18 +301,15 @@ public class World {
 	}
 	
 	public void render(Graphics g) {
-		// Draw all of the sprites in the game
-        //draw the Water Tiles
-        SpritesRender(background.get(WATER));
-
-        //draw the Grass Tiles
-        SpritesRender(background.get(GRASS));
-
-        //draw the Tree Tiles
-        SpritesRender(background.get(TREE));
-
-        //draw the FinishedPlayer sprites
-        SpritesRender(background.get(FINISHED_PLAYER));
+		// Draw all of the sprites in the background in the layer order.
+        // Layer order means the things has smaller index will be drawn first.
+        String[] KeysInLayerOrder = new String[]{GRASS, WATER, TREE,
+                                                BUS, BULLDOZER, RACECAR, BIKE,
+                                                LOG, LONGLOG, TURTLE,
+                                                FINISHED_PLAYER};
+        for (String key:KeysInLayerOrder){
+            SpritesRender(background.get(key));
+        }
 
         // draw the lives
         if (player.getLives()!=null) {
@@ -348,27 +317,6 @@ public class World {
                 life.render();
             }
         }
-
-        // draw the buses
-        SpritesRender(background.get(BUS));
-
-        // draw the racecars
-        SpritesRender(background.get(RACECAR));
-
-        // draw the bikes
-        SpritesRender(background.get(BIKE));
-
-        // draw the bulldozers
-        SpritesRender(background.get(BULLDOZER));
-
-        // draw the logs
-        SpritesRender(background.get(LOG));
-
-        // draw the longlogs
-        SpritesRender(background.get(LONGLOG));
-
-        // draw the turtles
-        SpritesRender(background.get(TURTLE));
 
         // draw the player
         player.render();
@@ -416,38 +364,38 @@ public class World {
                 if (description.length == NUM_OF_VALUES_OF_TILE){
                     // add the Water Tile object
                     if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(WATER)){
-                        this.addSpriteIntoBackground(WATER, output, new Water(WATER_REFERENCE, x, y));
+                        this.addSpriteIntoBackground(WATER, output, KillableTile.createAWater(x,y ));
                     }// add the Grass Tile object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(GRASS)){
-                        this.addSpriteIntoBackground(GRASS, output, new Grass(GRASS_REFERENCE, x, y));
+                        this.addSpriteIntoBackground(GRASS, output, Tile.createAGrass(x, y));
                     }// add the Tree Tile object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(TREE)){
-                        this.addSpriteIntoBackground(TREE, output, new Tree(TREE_REFERENCE, x, y));
+                        this.addSpriteIntoBackground(TREE, output, SoliableTile.createATree(x, y));
                     }
                 }// create Vehicle object, if the description contains 4 values
                 else if (description.length == NUM_OF_VALUES_OF_VEHICLE){
                     boolean isMoveToRight = Boolean.parseBoolean(description[INDEX_OF_DIRECTION]);
                     // add the Bus object
                     if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(BUS)){
-                        this.addSpriteIntoBackground(BUS, output, new Bus(BUS_REFERENCE, x, y, BUS_SPEED, isMoveToRight));
+                        this.addSpriteIntoBackground(BUS, output, KillableVehicle.createABus(x, y, isMoveToRight));
                     }// add the Racecar object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(RACECAR)){
-                        this.addSpriteIntoBackground(RACECAR, output, new Racecar(RACECAR_REFERENCE, x, y, RACECAR_SPEED, isMoveToRight));
+                        this.addSpriteIntoBackground(RACECAR, output, KillableVehicle.createARacecar(x, y, isMoveToRight));
                     }// add the Bike object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(BIKE)){
-                        this.addSpriteIntoBackground(BIKE, output, new Bike(BIKE_REFERENCE, x, y, BIKE_SPEED, isMoveToRight));
+                        this.addSpriteIntoBackground(BIKE, output, KillableVehicle.createABike(x, y, isMoveToRight));
                     }// add the Bulldozer object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(BULLDOZER)){
                         this.addSpriteIntoBackground(BULLDOZER, output, SolidableVehicle.createABulldozer(x, y, isMoveToRight));
                     }// add the Log object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(LOG)){
-                        this.addSpriteIntoBackground(LOG, output, new Log(LOG_REFERENCE, x, y, LOG_SPEED, isMoveToRight));
+                        this.addSpriteIntoBackground(LOG, output, RideableVehicle.createALog(x, y, isMoveToRight));
                     }// add the Longlog object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(LONGLOG)){
-                        this.addSpriteIntoBackground(LONGLOG, output, new Longlog(LONGLOG_REFERENCE, x, y, LONGLOG_SPEED, isMoveToRight));
+                        this.addSpriteIntoBackground(LONGLOG, output, RideableVehicle.createALongLog(x, y, isMoveToRight));
                     }// add the Turtle object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(TURTLE)){
-                        this.addSpriteIntoBackground(TURTLE, output, new Turtle(TURTLES_REFERENCE, x, y, TURTLE_SPEED, isMoveToRight));
+                        this.addSpriteIntoBackground(TURTLE, output, RideableVehicle.createATurtle(x, y, isMoveToRight));
                     }
 
                 }
@@ -464,18 +412,16 @@ public class World {
      *
      *Description: Return the center Position of the hole that the player current at.
      * */
-    public Position holeCenter(Player player) throws SlickException{
+    public Position holeCenter(Player player){
         // The initial tree object has no effect on selecting tree later, only the
         // minLeftDistance and  minRightDistance does, thus set the position to same random number
-        Tree leftNearestTree = new Tree(TREE_REFERENCE,
-                (float) Math.random(), (float) Math.random());
-        Tree rightNeatestTree = new Tree(TREE_REFERENCE,
-                (float) Math.random(), (float) Math.random());
+        SoliableTile leftNearestTree = SoliableTile.createATree((float) Math.random(), (float) Math.random());
+        SoliableTile rightNeatestTree = SoliableTile.createATree((float) Math.random(), (float) Math.random());
         float minLeftDistance = App.SCREEN_WIDTH; // since the min distance must less the SCREEN_WIDTH, it is safe to do this
         float minRightDistance = App.SCREEN_WIDTH;// same reason as above
 
         for (Sprite sprite:background.get(TREE)){
-            Tree tree = (Tree) sprite;
+            SoliableTile tree = (SoliableTile) sprite;
             // only find trees in the domain of tree has same y-coordinate with player's nextStep
             if (tree.getPosition().equalsY(player.getNextStep())){
                 // get the current distance between this tree and play's nextStep
