@@ -41,8 +41,7 @@ public abstract class Sprite {
             e.printStackTrace();
         }
 
-        this.position.setX(x);
-        this.position.setY(y);
+        this.position = new Position(x, y);
 
         this.bb = new BoundingBox(image, (int)x, (int)y);
     }

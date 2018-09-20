@@ -163,7 +163,7 @@ public class World {
         // set all the bulldozer.isContactWthPlayerToBeFalse, since for each frame we need to check it.
         if (background.get(BULLDOZER)!=null){
             for (Sprite sprite:background.get(BULLDOZER)){
-                Bulldozer bulldozer = (Bulldozer) sprite;
+                SolidableVehicle bulldozer = (SolidableVehicle) sprite;
                 bulldozer.setContactWithPlayer(false);
             }
 
@@ -193,7 +193,7 @@ public class World {
         // update all Bulldozer objects
         if (background.get(BULLDOZER)!=null) {
             for (Sprite sprite : background.get(BULLDOZER)) {
-                Bulldozer bulldozer = (Bulldozer) sprite;
+                SolidableVehicle bulldozer = (SolidableVehicle) sprite;
                 bulldozer.update(delta);
                 if (!player.isContactWithSolidSprite()) { // If the player is not contacted with solidable objects yet, check it out.
                     bulldozer.updateSolidBehaviour(player, delta);
@@ -438,7 +438,7 @@ public class World {
                         this.addSpriteIntoBackground(BIKE, output, new Bike(BIKE_REFERENCE, x, y, BIKE_SPEED, isMoveToRight));
                     }// add the Bulldozer object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(BULLDOZER)){
-                        this.addSpriteIntoBackground(BULLDOZER, output, new Bulldozer(BULLDOZER_REFERENCE, x, y, BULLDOZER_SPEED, isMoveToRight));
+                        this.addSpriteIntoBackground(BULLDOZER, output, SolidableVehicle.createABulldozer(x, y, isMoveToRight));
                     }// add the Log object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(LOG)){
                         this.addSpriteIntoBackground(LOG, output, new Log(LOG_REFERENCE, x, y, LOG_SPEED, isMoveToRight));

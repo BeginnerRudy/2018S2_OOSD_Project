@@ -15,13 +15,12 @@ public class SolidableVehicle extends Vehicle implements Solidable {
      *
      * @param x The given x-coordinate
      * @param y The given y-coordinate
-     * @param speed The given speed
      * @param isMoveToRight The given moving direction
      *
      * Description: This methods returns a Solidable Vehicle called bulldozer.
      * */
-    public SolidableVehicle createABulldozer(float x, float y, float speed, boolean isMoveToRight){
-        return new SolidableVehicle(BULLDOZER_REFERENCE, x, y, speed, isMoveToRight);
+    public static SolidableVehicle createABulldozer(float x, float y, boolean isMoveToRight){
+        return new SolidableVehicle(BULLDOZER_REFERENCE, x, y, BULLDOZER_SPEED, isMoveToRight);
     }
 
 
