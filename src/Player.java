@@ -13,6 +13,7 @@ public class Player extends Sprite{
     private boolean isInAHole;
     private boolean isKilled;
     private boolean isGameOver;
+    private boolean isRidden;
     private Position nextStep;
     private BoundingBox nextStepBB;
     private ArrayList<Life> lives;
@@ -26,6 +27,7 @@ public class Player extends Sprite{
         isInAHole = false;
         isKilled = false;
         isGameOver = false;
+        isRidden = false;
 
         try {
             nextStepBB = new BoundingBox(new Image(imgSrc), x, y);
@@ -120,6 +122,15 @@ public class Player extends Sprite{
         isGameOver = gameOver;
     }
 
+    /** Method signature: public void setRidden(boolean gameOver)
+     *
+     * @param ridden The given boolean value to set
+     *
+     * Description: The setter for the attribute isRidden
+     * */
+    public void setRidden(boolean ridden) {
+        isRidden = ridden;
+    }
 
     /**
      * Method Signature:  private Position move(Input input);
@@ -231,6 +242,16 @@ public class Player extends Sprite{
      * */
     public boolean isGameOver() {
         return isGameOver;
+    }
+
+    /** Method signature: public boolean isRidden();
+     *
+     * no argument
+     *
+     * Description: The getter of isRidden
+     * */
+    public boolean isRidden() {
+        return isRidden;
     }
 
     /**Method signature:public void restart(float x, float y);

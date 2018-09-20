@@ -16,6 +16,21 @@ public class RideableVehicle extends Vehicle implements Rideable{
         super(imageSrc, x, y, speed, isMoveToRight);
     }
 
+    /** Method signature: public void updateRideableBehaviour(Player player, int delta);
+     *
+     * @param player => The reference to player
+     * @param delta The milliseconds since last frame passed.
+     *
+     * Description: This method update the player.isKilled and player.isRidden
+     *              according to whether rideableVehicle contact with the player.
+     *              If it does, set player.isKilled to false, set player.isRidden to true.
+     *              As well as update player's next move.
+     *              Otherwise, do nothing.
+     * */
+    public void updateRideableBehaviour(Player player, int delta){
+        playerRide(player, this, delta);
+    }
+
     /**Method signature: public Rideable createALog(float x, float y, float speed, boolean isMoveToRight);
      *
      * @param x The given x-coordinate

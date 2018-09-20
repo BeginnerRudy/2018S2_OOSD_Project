@@ -5,6 +5,7 @@ import org.newdawn.slick.SlickException;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 
 public class World {
@@ -69,8 +70,27 @@ public class World {
     private static final String LONGLOG = "longLog";
     // the csv identifier for TURTLE
     private static final String TURTLE = "turtle";
+    // the csv identifier for LONGLOG and LOG
+    private static final String LOGS = "logs";
 
+    // The convert between second to millisecond
+    private static final float SECOND_TO_MILLISECOND = 1000;
 
+    // The period that the turtle should be in the water
+    private static final float TIME_OF_TURTLE_SHOULD_DISAPPEAR = 7.0f*SECOND_TO_MILLISECOND;
+    // The period that the turtle should be on the water
+    private static final float TIME_OF_TURTLE_SHOULD_APPEAR = 2.0f*SECOND_TO_MILLISECOND;
+    // The period that extra life appear
+//    private static final float TIME_OF_EXTRA_LIFE_APPEAR = SECOND_TO_MILLISECOND*(25 + (float) Math.random()*10);
+    private static final float TIME_OF_EXTRA_LIFE_APPEAR = SECOND_TO_MILLISECOND*2;
+    // The period that extra life should disappear
+    private static final float TIME_OF_EXTRALIFE_DISAPPEAR = SECOND_TO_MILLISECOND*14f;
+    // The period that extra life should move
+    private static final float TIME_OF_EXTRALIFE_MOVE = SECOND_TO_MILLISECOND*2f;
+    // The speed of Extra life
+    private static final float EXTRA_LIFE_SPEED = Tile.TILE_SIZE;
+    // The initial direction of Extra Life
+    private static final boolean EXTRA_LIFE_IS_MOVE_TO_RIGHT_INITIAL = true;
 
 
     // The x-coordinate for bike to reverse direction
@@ -84,6 +104,14 @@ public class World {
     private int currentLevel;
     // The HashMap with (String, ArrayList<Sprite>) to represent the "background" for level
     private HashMap<String, ArrayList<Sprite>> background;
+    // the total time of the world (in milliseconds)
+    private float time;
+    // the extra life
+    private ExtraLife extraLife;
+    // The boolean value for whether extra life appear
+    private boolean ExtraLifeIsAppear;
+    // The place extralife wil be on
+    private RideableVehicle choosed_place;
 
 	public World() throws SlickException {
         // initialize the background of the world of level1
@@ -96,13 +124,18 @@ public class World {
         //initialize the player
         player = new Player(PLAYER_REFERENCE, PLAYER_INITIAL_X, PLAYER_INITIAL_Y);
         //initialize the lives of player
-        for (int i=0; i<Player.INITIAL_NUMBER_OF_LIVES; i++){
-            player.getLives().add(new Life(LIVES_REFERENCE, Life.INITIAL_X_POSITION+i*Life.THE_GAP, Life.INITIAL_Y_POSITION));
+        for (int i=0; i<Player.INITIAL_NUMBER_OF_LIVES; i++) {
+            player.getLives().add(new Life(LIVES_REFERENCE, Life.INITIAL_X_POSITION + i * Life.THE_GAP, Life.INITIAL_Y_POSITION));
         }
 
+        this.time = 0f;
+        ExtraLifeIsAppear = false;
 	}
 	
 	public void update(Input input, int delta)  throws SlickException {
+
+
+
 	    // check is it the time to turn to next level
         int numOfRunsFinished = 0;
         if (background.get(FINISHED_PLAYER)!=null) {
@@ -140,10 +173,81 @@ public class World {
             }
 
         }
+        // set the player not to ride
+        player.setRidden(false);
+
 
         // update the position and boundingbox of player's next position depends on input
         player.updatePlayNextMove(input);
 
+        // update the position of rideable vehicles and check whether the player ride on any thing, if it does give it initial speed.
+
+        // update all Log and Longlog objects
+        if (background.get(LOGS)!=null) {
+            for (Sprite sprite : background.get(LOGS)) {
+                RideableVehicle log = (RideableVehicle) sprite;
+                log.update(delta);
+                if (!player.isRidden()){//check whether is it on a rideable vehicle if it does not ride yet
+                    log.updateRideableBehaviour(player, delta);
+                }
+            }
+        }
+
+        // update all Turtle objects
+        if (background.get(TURTLE)!=null) {
+            for (Sprite sprite : background.get(TURTLE)) {
+                RideableVehicle turtle = (RideableVehicle) sprite;
+                turtle.update(delta);
+                if (!player.isRidden()
+                        &&(time%(TIME_OF_TURTLE_SHOULD_DISAPPEAR+TIME_OF_TURTLE_SHOULD_APPEAR) > 0
+                        &&time%(TIME_OF_TURTLE_SHOULD_DISAPPEAR+TIME_OF_TURTLE_SHOULD_APPEAR) < TIME_OF_TURTLE_SHOULD_DISAPPEAR)){
+                    //check whether is it on a rideable vehicle if it does not ride yet and not disappear
+                    turtle.updateRideableBehaviour(player, delta);
+                }
+            }
+        }
+
+        // check whether to create an extra life
+        if ((time%(TIME_OF_EXTRA_LIFE_APPEAR+TIME_OF_EXTRALIFE_DISAPPEAR))>TIME_OF_EXTRA_LIFE_APPEAR
+                && !ExtraLifeIsAppear){
+            ExtraLifeIsAppear = true;
+            Random random = new Random();
+            choosed_place =
+                    (RideableVehicle) background.get(LOGS).get(random.nextInt(background.get(LOGS).size()-1));
+            extraLife = new ExtraLife(EXTRALIFE_REFERENCE, choosed_place.getPosition().getX(), choosed_place.getPosition().getY(),
+                    EXTRA_LIFE_SPEED, EXTRA_LIFE_IS_MOVE_TO_RIGHT_INITIAL);
+        }else if (!((time%(TIME_OF_EXTRA_LIFE_APPEAR+TIME_OF_EXTRALIFE_DISAPPEAR))>TIME_OF_EXTRA_LIFE_APPEAR)){// need to disappear
+            ExtraLifeIsAppear = false;
+        }
+
+        // update the extra life's position
+        if (ExtraLifeIsAppear) {
+            extraLife.setKilled(false);
+
+            if (choosed_place.isMoveToRight()){
+                extraLife.getNextStep().setX(extraLife.getPosition().getX() + choosed_place.getSpeed()*delta);
+            }else{
+                extraLife.getNextStep().setX(extraLife.getPosition().getX() - choosed_place.getSpeed()*delta);
+            }
+
+            for (Sprite sprite:background.get(WATER)){
+                KillableTile water = (KillableTile) sprite;
+                water.update(extraLife);
+            }
+
+            if (extraLife.isKilled()){
+                extraLife.setMoveToRight(!extraLife.isMoveToRight());
+            }
+
+
+            if (time!=0 && (((time - TIME_OF_EXTRA_LIFE_APPEAR) % TIME_OF_EXTRALIFE_MOVE) < delta)) {
+                if (extraLife.isMoveToRight()) {
+                    extraLife.getPosition().setX(extraLife.getNextStep().getX() + EXTRA_LIFE_SPEED);
+                } else {
+                    extraLife.getPosition().setX(extraLife.getNextStep().getX() - EXTRA_LIFE_SPEED);
+                }
+            }
+        }
         //update the Tree Tile for checking contacting with player
         for (Sprite sprite:background.get(TREE)){
             if (!player.isContactWithSolidSprite()) { // If the player is not contacted with solidable objects yet, check it out.
@@ -201,12 +305,12 @@ public class World {
 
         //update whether the player is killed
         //update killable waters
-//        for (Sprite sprite:background.get(WATER)){
-//            if (!player.isKilled()) { // If the player is not killed yet, check it out.
-//                KillableTile water = (KillableTile) sprite;
-//                water.update(player);
-//            }
-//        }
+        for (Sprite sprite:background.get(WATER)){
+            if (!player.isKilled()) { // If the player is not killed yet, check it out.
+                KillableTile water = (KillableTile) sprite;
+                water.update(player);
+            }
+        }
 
         // update all Bus objects
         if (background.get(BUS)!=null) {
@@ -262,29 +366,6 @@ public class World {
             }
         }
 
-        // update all Log objects
-        if (background.get(LOG)!=null) {
-            for (Sprite sprite : background.get(LOG)) {
-                RideableVehicle log = (RideableVehicle) sprite;
-                log.update(delta);
-            }
-        }
-
-        // update all LongLog objects
-        if (background.get(LONGLOG)!=null) {
-            for (Sprite sprite : background.get(LONGLOG)) {
-                RideableVehicle longlog = (RideableVehicle) sprite;
-                longlog.update(delta);
-            }
-        }
-
-        // update all Log objects
-        if (background.get(TURTLE)!=null) {
-            for (Sprite sprite : background.get(TURTLE)) {
-                RideableVehicle turtle = (RideableVehicle) sprite;
-                turtle.update(delta);
-            }
-        }
         // Update all of the sprites in the game
         player.update();
 
@@ -297,6 +378,8 @@ public class World {
 
         // update the contact between player and obstacles
 
+        // update the time
+        time += delta;
 
 	}
 	
@@ -305,10 +388,15 @@ public class World {
         // Layer order means the things has smaller index will be drawn first.
         String[] KeysInLayerOrder = new String[]{GRASS, WATER, TREE,
                                                 BUS, BULLDOZER, RACECAR, BIKE,
-                                                LOG, LONGLOG, TURTLE,
+                                                LOGS,
                                                 FINISHED_PLAYER};
         for (String key:KeysInLayerOrder){
             SpritesRender(background.get(key));
+        }
+
+        // draw the Turtle
+        if (!(time%(TIME_OF_TURTLE_SHOULD_DISAPPEAR+TIME_OF_TURTLE_SHOULD_APPEAR) >= TIME_OF_TURTLE_SHOULD_DISAPPEAR)){
+            SpritesRender(background.get(TURTLE));
         }
 
         // draw the lives
@@ -316,6 +404,11 @@ public class World {
             for (Life life : player.getLives()) {
                 life.render();
             }
+        }
+
+        // check whether to create an extra life
+        if (extraLife != null&& (time%(TIME_OF_EXTRA_LIFE_APPEAR+TIME_OF_EXTRALIFE_DISAPPEAR))>TIME_OF_EXTRA_LIFE_APPEAR){
+            extraLife.render();
         }
 
         // draw the player
@@ -389,10 +482,10 @@ public class World {
                         this.addSpriteIntoBackground(BULLDOZER, output, SolidableVehicle.createABulldozer(x, y, isMoveToRight));
                     }// add the Log object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(LOG)){
-                        this.addSpriteIntoBackground(LOG, output, RideableVehicle.createALog(x, y, isMoveToRight));
+                        this.addSpriteIntoBackground(LOGS, output, RideableVehicle.createALog(x, y, isMoveToRight));
                     }// add the Longlog object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(LONGLOG)){
-                        this.addSpriteIntoBackground(LONGLOG, output, RideableVehicle.createALongLog(x, y, isMoveToRight));
+                        this.addSpriteIntoBackground(LOGS, output, RideableVehicle.createALongLog(x, y, isMoveToRight));
                     }// add the Turtle object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(TURTLE)){
                         this.addSpriteIntoBackground(TURTLE, output, RideableVehicle.createATurtle(x, y, isMoveToRight));
