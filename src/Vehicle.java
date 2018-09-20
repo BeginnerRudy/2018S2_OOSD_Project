@@ -53,4 +53,24 @@ public class Vehicle extends Sprite{
     public void setMoveToRight(boolean moveToRight) {
         isMoveToRight = moveToRight;
     }
+
+    /** Method signature: public float getSpeed();
+     *
+     * none
+     *
+     * Description: The getter for the attribute speed
+     * */
+    public float getSpeed() {
+        return speed;
+    }
+
+    /** Method signature: public boolean isMoveToRight();
+     *
+     * none
+     *
+     * Description: The getter for the attribute isMoveToRight
+     * */
+    public boolean isMoveToRight() {
+        return isMoveToRight;
+    }
 }

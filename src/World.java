@@ -148,6 +148,14 @@ public class World {
         player.setInAHole(false);
         // set the player.isKilled to be false, since for each frame we need to check it .
         player.setKilled(false);
+        // set all the bulldozer.isContactWthPlayerToBeFalse, since for each frame we need to check it.
+        if (background.get(BULLDOZER)!=null){
+            for (Sprite sprite:background.get(BULLDOZER)){
+                Bulldozer bulldozer = (Bulldozer) sprite;
+                bulldozer.setContactWithPlayer(false);
+            }
+
+        }
 
         // update the position and boundingbox of player's next position depends on input
         player.updatePlayNextMove(input);
@@ -176,7 +184,7 @@ public class World {
                 Bulldozer bulldozer = (Bulldozer) sprite;
                 bulldozer.update(delta);
                 if (!player.isContactWithSolidSprite()) { // If the player is not contacted with solidable objects yet, check it out.
-                    bulldozer.updateSolidBehaviour(player);
+                    bulldozer.updateSolidBehaviour(player, delta);
                 }
             }
         }
@@ -209,12 +217,12 @@ public class World {
 
         //update whether the player is killed
         //update killable waters
-        for (Sprite sprite:background.get(WATER)){
-            if (!player.isKilled()) { // If the player is not killed yet, check it out.
-                Water water = (Water) sprite;
-                water.update(player);
-            }
-        }
+//        for (Sprite sprite:background.get(WATER)){
+//            if (!player.isKilled()) { // If the player is not killed yet, check it out.
+//                Water water = (Water) sprite;
+//                water.update(player);
+//            }
+//        }
 
         // update all Bus objects
         if (background.get(BUS)!=null) {
