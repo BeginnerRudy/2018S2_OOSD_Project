@@ -224,27 +224,48 @@ public class World {
         if (ExtraLifeIsAppear) {
             extraLife.setKilled(false);
 
+            // initial speed
             if (choosed_place.isMoveToRight()){
                 extraLife.getNextStep().setX(extraLife.getPosition().getX() + choosed_place.getSpeed()*delta);
             }else{
                 extraLife.getNextStep().setX(extraLife.getPosition().getX() - choosed_place.getSpeed()*delta);
             }
 
+            // own speed
+            if (time!=0 && (((time - TIME_OF_EXTRA_LIFE_APPEAR) % TIME_OF_EXTRALIFE_MOVE) < delta)) {
+                if (extraLife.isMoveToRight()) {
+                    extraLife.getNextStep().setX(extraLife.getNextStep().getX() + EXTRA_LIFE_SPEED);
+                } else {
+                    extraLife.getNextStep().setX(extraLife.getNextStep().getX() - EXTRA_LIFE_SPEED);
+                }
+            }
+
+            // check boundary
             for (Sprite sprite:background.get(WATER)){
                 KillableTile water = (KillableTile) sprite;
                 water.update(extraLife);
             }
 
+            // update direction
             if (extraLife.isKilled()){
                 extraLife.setMoveToRight(!extraLife.isMoveToRight());
             }
 
 
+            // make move
+            // initial speed
+            if (choosed_place.isMoveToRight()){
+                extraLife.getPosition().setX(extraLife.getPosition().getX() + choosed_place.getSpeed()*delta);
+            }else{
+                extraLife.getPosition().setX(extraLife.getPosition().getX() - choosed_place.getSpeed()*delta);
+            }
+
+
             if (time!=0 && (((time - TIME_OF_EXTRA_LIFE_APPEAR) % TIME_OF_EXTRALIFE_MOVE) < delta)) {
                 if (extraLife.isMoveToRight()) {
-                    extraLife.getPosition().setX(extraLife.getNextStep().getX() + EXTRA_LIFE_SPEED);
+                    extraLife.getPosition().setX(extraLife.getPosition().getX() + EXTRA_LIFE_SPEED);
                 } else {
-                    extraLife.getPosition().setX(extraLife.getNextStep().getX() - EXTRA_LIFE_SPEED);
+                    extraLife.getPosition().setX(extraLife.getPosition().getX() - EXTRA_LIFE_SPEED);
                 }
             }
         }
