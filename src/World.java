@@ -92,6 +92,9 @@ public class World {
     private static final float BIKE_SPEED = 0.2f;
     // The speed of vehicle bulldozer
     private static final float BULLDOZER_SPEED = 0.05f;
+    // The x-coordinate for bike to reverse direction
+    private static final float BIKE_REVERSE_24 = 24f;
+    private static final float BIKE_REVERSE_1000 = 1000f;
 
     /*Define Sprites and Background*/
     // declare the player
@@ -227,9 +230,10 @@ public class World {
         // update all Bus objects
         if (background.get(BUS)!=null) {
             for (Sprite sprite : background.get(BUS)) {
+                Bus bus = (Bus) sprite;
+                bus.update(delta);
                 if (!player.isKilled()) { // If the player is not killed yet, check it out.
-                    Bus bus = (Bus) sprite;
-                    bus.update(delta);
+                   bus.updateKillableBehaviour(player);
                 }
             }
         }
@@ -237,18 +241,26 @@ public class World {
         // update all Racecar objects
         if (background.get(RACECAR)!=null) {
             for (Sprite sprite : background.get(RACECAR)) {
+                Racecar racecar = (Racecar) sprite;
+                racecar.update(delta);
+                // update the direction
                 if (!player.isKilled()) { // If the player is not killed yet, check it out.
-                    Racecar racecar = (Racecar) sprite;
-                    racecar.update(delta);
+                    racecar.updateKillableBehaviour(player);
                 }
             }
         }
         // update all Bike objects
         if (background.get(BIKE)!=null) {
             for (Sprite sprite : background.get(BIKE)) {
+                Bike bike = (Bike) sprite;
+                bike.update(delta);
+                if (bike.getPosition().getX() < BIKE_REVERSE_24||
+                        bike.getPosition().getX() > BIKE_REVERSE_1000){
+                    bike.setMoveToRight(!bike.isMoveToRight());
+                }
+
                 if (!player.isKilled()) { // If the player is not killed yet, check it out.
-                    Bike bike = (Bike) sprite;
-                    bike.update(delta);
+                    bike.updateKillableBehaviour(player);
                 }
             }
         }
