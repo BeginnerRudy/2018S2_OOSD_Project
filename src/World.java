@@ -82,6 +82,12 @@ public class World {
     private static final String BIKE = "bike";
     // the csv identifier for BULLDOZER
     private static final String BULLDOZER = "bulldozer";
+    // the csv identifier for LOG
+    private static final String LOG = "log";
+    // the csv identifier for LONGLOG
+    private static final String LONGLOG = "longLog";
+    // the csv identifier for TURTLE
+    private static final String TURTLE = "turtle";
 
 
     // The speed of vehicle bus
@@ -92,6 +98,12 @@ public class World {
     private static final float BIKE_SPEED = 0.2f;
     // The speed of vehicle bulldozer
     private static final float BULLDOZER_SPEED = 0.05f;
+    // The speed of vehicle log
+    private static final float LOG_SPEED = 0.1f;
+    // The speed of vehicle longlog
+    private static final float LONGLOG_SPEED = 0.07f;
+    // The speed of vehicle turtle
+    private static final float TURTLE_SPEED = 0.085f;
     // The x-coordinate for bike to reverse direction
     private static final float BIKE_REVERSE_24 = 24f;
     private static final float BIKE_REVERSE_1000 = 1000f;
@@ -281,7 +293,29 @@ public class World {
             }
         }
 
+        // update all Log objects
+        if (background.get(LOG)!=null) {
+            for (Sprite sprite : background.get(LOG)) {
+                Log log = (Log) sprite;
+                log.update(delta);
+            }
+        }
 
+        // update all LongLog objects
+        if (background.get(LONGLOG)!=null) {
+            for (Sprite sprite : background.get(LONGLOG)) {
+                Longlog longlog = (Longlog) sprite;
+                longlog.update(delta);
+            }
+        }
+
+        // update all Log objects
+        if (background.get(TURTLE)!=null) {
+            for (Sprite sprite : background.get(TURTLE)) {
+                Turtle turtle = (Turtle) sprite;
+                turtle.update(delta);
+            }
+        }
         // Update all of the sprites in the game
         player.update();
 
@@ -329,6 +363,15 @@ public class World {
 
         // draw the bulldozers
         SpritesRender(background.get(BULLDOZER));
+
+        // draw the logs
+        SpritesRender(background.get(LOG));
+
+        // draw the longlogs
+        SpritesRender(background.get(LONGLOG));
+
+        // draw the turtles
+        SpritesRender(background.get(TURTLE));
 
         // draw the player
         player.render();
@@ -389,16 +432,25 @@ public class World {
                     boolean isMoveToRight = Boolean.parseBoolean(description[INDEX_OF_DIRECTION]);
                     // add the Bus object
                     if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(BUS)){
-                        this.addSpriteIntoBackground(BUS, output, new Bus(BUS_REFERENCE, x, y, BUS_SPEED, isMoveToRight));
+                        //this.addSpriteIntoBackground(BUS, output, new Bus(BUS_REFERENCE, x, y, BUS_SPEED, isMoveToRight));
                     }// add the Racecar object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(RACECAR)){
-                        this.addSpriteIntoBackground(RACECAR, output, new Racecar(RACECAR_REFERENCE, x, y, RACECAR_SPEED, isMoveToRight));
+                        //this.addSpriteIntoBackground(RACECAR, output, new Racecar(RACECAR_REFERENCE, x, y, RACECAR_SPEED, isMoveToRight));
                     }// add the Bike object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(BIKE)){
-                        this.addSpriteIntoBackground(BIKE, output, new Bike(BIKE_REFERENCE, x, y, BIKE_SPEED, isMoveToRight));
+                        //this.addSpriteIntoBackground(BIKE, output, new Bike(BIKE_REFERENCE, x, y, BIKE_SPEED, isMoveToRight));
                     }// add the Bulldozer object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(BULLDOZER)){
-                        this.addSpriteIntoBackground(BULLDOZER, output, new Bulldozer(BULLDOZER_REFERENCE, x, y, BULLDOZER_SPEED, isMoveToRight));
+                        //this.addSpriteIntoBackground(BULLDOZER, output, new Bulldozer(BULLDOZER_REFERENCE, x, y, BULLDOZER_SPEED, isMoveToRight));
+                    }// add the Log object
+                    else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(LOG)){
+                        this.addSpriteIntoBackground(LOG, output, new Log(LOG_REFERENCE, x, y, LOG_SPEED, isMoveToRight));
+                    }// add the Longlog object
+                    else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(LONGLOG)){
+                        this.addSpriteIntoBackground(LONGLOG, output, new Longlog(LONGLOG_REFERENCE, x, y, LONGLOG_SPEED, isMoveToRight));
+                    }// add the Turtle object
+                    else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(TURTLE)){
+                        this.addSpriteIntoBackground(TURTLE, output, new Turtle(TURTLES_REFERENCE, x, y, TURTLE_SPEED, isMoveToRight));
                     }
 
                 }
