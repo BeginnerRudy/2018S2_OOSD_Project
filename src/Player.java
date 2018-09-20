@@ -18,7 +18,7 @@ public class Player extends Sprite{
     private ArrayList<Life> lives;
 
     // The constructor of Player
-    public Player(String imgSrc, float x, float y) throws SlickException{
+    public Player(String imgSrc, float x, float y)  {
         super(imgSrc, x, y);
         nextStep = new Position(x, y); // Initialize the next step Position to the start position
                                         // due to that there is no information about next step as game just started
@@ -26,7 +26,14 @@ public class Player extends Sprite{
         isInAHole = false;
         isKilled = false;
         isGameOver = false;
-        nextStepBB = new BoundingBox(new Image(imgSrc), x, y);
+
+        try {
+            nextStepBB = new BoundingBox(new Image(imgSrc), x, y);
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
+
+
         lives = new ArrayList<>();
     }
 

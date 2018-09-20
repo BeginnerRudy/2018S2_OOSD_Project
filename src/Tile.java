@@ -8,7 +8,7 @@ public class Tile extends Sprite {
      */
     public static final float TILE_SIZE = 48;
 
-    public Tile(String imgSrc, float x, float y) throws SlickException {
+    public Tile(String imgSrc, float x, float y){
         super(imgSrc, x, y);
     }
 

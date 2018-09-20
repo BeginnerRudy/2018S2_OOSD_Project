@@ -8,11 +8,9 @@ public abstract class Sprite {
     private Position position;
     private BoundingBox bb;
 
-    public Sprite(String imageSrc, float x, float y) throws SlickException {
+    public Sprite(String imageSrc, float x, float y){
         // Why would the constructor need a path to an image, and a coordinate?
-        image = new Image(imageSrc);
-        this.position = new Position(x, y);
-        bb = new BoundingBox(image, x, y);
+        setupSprite(imageSrc, x, y);
 
     }
     /**Method signature: public Sprite(Sprite copy);
@@ -25,6 +23,28 @@ public abstract class Sprite {
         image = copy.getImage();
         position = copy.getPosition();
         bb = copy.getBoundingBox();
+    }
+
+    /**Method signature: private void setupSprite(String imageSrc, float x, float y);
+     *
+     * @param x The given x-coordinate.
+     * @param y The given y-coordinate.
+     * @param imageSrc The given image source.
+     *
+     * Description: This method create a image and set the player's position by the given x, y as well as
+     *                 create a BoundingBox for it.
+     * */
+    private void setupSprite(String imageSrc, float x, float y) {
+        try {
+            image = new Image(imageSrc);
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
+
+        this.position.setX(x);
+        this.position.setY(y);
+
+        this.bb = new BoundingBox(image, (int)x, (int)y);
     }
 
     // I am going to override render in concrete class, respectively

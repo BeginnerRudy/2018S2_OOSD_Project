@@ -21,8 +21,6 @@ public class World {
     private static final String BUS_REFERENCE = "assets/bus.png";
     // define the image reference of bike
     private static final String BIKE_REFERENCE = "assets/bike.png";
-    // define the image reference of bulldozer
-    private static final String BULLDOZER_REFERENCE = "assets/bulldozer.png";
     // define the image reference of racecar
     private static final String RACECAR_REFERENCE = "assets/racecar.png";
     // define the image reference of log
@@ -96,8 +94,7 @@ public class World {
     private static final float RACECAR_SPEED = 0.5f;
     // The speed of vehicle bike
     private static final float BIKE_SPEED = 0.2f;
-    // The speed of vehicle bulldozer
-    private static final float BULLDOZER_SPEED = 0.05f;
+
     // The speed of vehicle log
     private static final float LOG_SPEED = 0.1f;
     // The speed of vehicle longlog
@@ -114,7 +111,7 @@ public class World {
     // declare the current level of the world
     private int currentLevel;
     // The HashMap with (String, ArrayList<Sprite>) to represent the "background" for level
-    private HashMap<String, ArrayList<Sprite>> background = new HashMap<>();
+    private HashMap<String, ArrayList<Sprite>> background;
 
 	public World() throws SlickException {
         // initialize the background of the world of level1
@@ -278,7 +275,7 @@ public class World {
         }
 
 
-        // update the position of player if it is killed
+        // update the position and life of player if it is killed
         if (player.isKilled()) {
             if (player.getLives() != null) {
                 if (player.getLives().size() > Player.MIN_NUM_OF_LIFE_TO_PLAY) {
@@ -432,16 +429,16 @@ public class World {
                     boolean isMoveToRight = Boolean.parseBoolean(description[INDEX_OF_DIRECTION]);
                     // add the Bus object
                     if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(BUS)){
-                        //this.addSpriteIntoBackground(BUS, output, new Bus(BUS_REFERENCE, x, y, BUS_SPEED, isMoveToRight));
+                        this.addSpriteIntoBackground(BUS, output, new Bus(BUS_REFERENCE, x, y, BUS_SPEED, isMoveToRight));
                     }// add the Racecar object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(RACECAR)){
-                        //this.addSpriteIntoBackground(RACECAR, output, new Racecar(RACECAR_REFERENCE, x, y, RACECAR_SPEED, isMoveToRight));
+                        this.addSpriteIntoBackground(RACECAR, output, new Racecar(RACECAR_REFERENCE, x, y, RACECAR_SPEED, isMoveToRight));
                     }// add the Bike object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(BIKE)){
-                        //this.addSpriteIntoBackground(BIKE, output, new Bike(BIKE_REFERENCE, x, y, BIKE_SPEED, isMoveToRight));
+                        this.addSpriteIntoBackground(BIKE, output, new Bike(BIKE_REFERENCE, x, y, BIKE_SPEED, isMoveToRight));
                     }// add the Bulldozer object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(BULLDOZER)){
-                        //this.addSpriteIntoBackground(BULLDOZER, output, new Bulldozer(BULLDOZER_REFERENCE, x, y, BULLDOZER_SPEED, isMoveToRight));
+                        this.addSpriteIntoBackground(BULLDOZER, output, new Bulldozer(BULLDOZER_REFERENCE, x, y, BULLDOZER_SPEED, isMoveToRight));
                     }// add the Log object
                     else if (description[INDEX_OF_OBJ_CLASS_IN_CSV].equals(LOG)){
                         this.addSpriteIntoBackground(LOG, output, new Log(LOG_REFERENCE, x, y, LOG_SPEED, isMoveToRight));

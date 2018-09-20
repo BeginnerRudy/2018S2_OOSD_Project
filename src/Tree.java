@@ -1,7 +1,7 @@
 import org.newdawn.slick.SlickException;
 
 public class Tree extends Tile implements Solidable{
-    public Tree(String imgSrc, float x, float y) throws SlickException {
+    public Tree(String imgSrc, float x, float y){
         super(imgSrc, x, y);
     }
 

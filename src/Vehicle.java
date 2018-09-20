@@ -5,7 +5,7 @@ public class Vehicle extends Sprite{
     private float speed;
     private boolean isMoveToRight;
 
-    public Vehicle(String imageSrc, float x, float y, float speed, boolean isMoveToRight) throws SlickException {
+    public Vehicle(String imageSrc, float x, float y, float speed, boolean isMoveToRight){
         super(imageSrc, x, y);
         this.speed = speed;
         this.isMoveToRight = isMoveToRight;

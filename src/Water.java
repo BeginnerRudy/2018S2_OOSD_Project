@@ -1,7 +1,7 @@
 import org.newdawn.slick.SlickException;
 
 public class Water extends Tile implements Killable{
-    public Water(String imageSrc, float x, float y) throws SlickException {
+    public Water(String imageSrc, float x, float y){
         super(imageSrc, x, y);
     }
 
