@@ -1,7 +1,5 @@
-import org.lwjgl.Sys;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,9 +76,8 @@ public class World {
     public static final int TIME_OF_TURTLE_SHOULD_DISAPPEAR = 7*SECOND_TO_MILLISECOND;
     // The period that the turtle should be on the water
     public static final int TIME_OF_TURTLE_SHOULD_APPEAR = 2*SECOND_TO_MILLISECOND;
-    // The period that extra life appear
-//    private static final float TIME_OF_EXTRA_LIFE_APPEAR = SECOND_TO_MILLISECOND*(25 + (float) Math.random()*10);
-    public static final int TIME_OF_EXTRA_LIFE_APPEAR = SECOND_TO_MILLISECOND*2;
+    //The period that extra life appear
+    public static final float TIME_OF_EXTRA_LIFE_APPEAR = SECOND_TO_MILLISECOND*(25 + (float) Math.random()*10);
     // The period that extra life should disappear
     public static final int TIME_OF_EXTRALIFE_DISAPPEAR = SECOND_TO_MILLISECOND*14;
     // The period that extra life should move
@@ -261,11 +258,13 @@ public class World {
         }
 
         // update all Bulldozer objects
-        if (background.get(BULLDOZER)!=null && !player.isRidden()) {
+        if (background.get(BULLDOZER)!=null) {
             for (Sprite sprite : background.get(BULLDOZER)) {
                 SolidableVehicle bulldozer = (SolidableVehicle) sprite;
                 bulldozer.update(delta);
-                if (!player.isContactWithSolidSprite()) { // If the player is not contacted with solidable objects yet, check it out.
+                if (!player.isContactWithSolidSprite() && !player.isRidden()) {
+                    // If the player is not contacted with solidable objects yet, check it out.
+                    // If it is ridden on an object, stop the off screen checking in bulldozer.updateSolidBehaviour
                     bulldozer.updateSolidBehaviour(player, delta);
                 }
             }
