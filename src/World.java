@@ -107,12 +107,14 @@ public class World {
     private boolean ExtraLifeIsAppear;
     // The place extralife wil be on
     private RideableVehicle choosed_place;
+    // indicates whether the extra life is eaten
+    private boolean extraLifeIsEaten;
 
 	public World() throws SlickException {
         // initialize the background of the world of level1
         // This background contains all the objects used in this game.
         // More details in the description  of method createTheBackground
-        background = this.createTheBackground(LEVEL1_REFERENCE);
+        background = this.createTheBackground(LEVEL0_REFERENCE);
 
         // begin with level 0
         this.currentLevel = LEVEL_0;
@@ -125,6 +127,7 @@ public class World {
 
         this.time = 0;
         ExtraLifeIsAppear = false;
+        extraLifeIsEaten = false;
 	}
 	
 	public void update(Input input, int delta)  throws SlickException {
@@ -204,7 +207,7 @@ public class World {
 
         // check whether to create an extra life
         if ((time%(TIME_OF_EXTRA_LIFE_APPEAR+TIME_OF_EXTRALIFE_DISAPPEAR))>TIME_OF_EXTRA_LIFE_APPEAR
-                && !ExtraLifeIsAppear){
+                && !ExtraLifeIsAppear && ! extraLifeIsEaten){
             ExtraLifeIsAppear = true;
             Random random = new Random();
             choosed_place =
@@ -212,6 +215,7 @@ public class World {
             extraLife = new ExtraLife(choosed_place);
         }else if (!((time%(TIME_OF_EXTRA_LIFE_APPEAR+TIME_OF_EXTRALIFE_DISAPPEAR))>TIME_OF_EXTRA_LIFE_APPEAR)){// need to disappear
             ExtraLifeIsAppear = false;
+            extraLifeIsEaten = false; // there will be a new one.
             extraLife = null;// make it none existent
         }
 
@@ -234,6 +238,7 @@ public class World {
 
 
             extraLife.getPosition().setX(extraLife.getTheLog().getPosition().getX() + extraLife.getExtraLifePositionRelativeToTheLogCenter());
+            extraLife.getBoundingBox().setX(extraLife.getTheLog().getPosition().getX() + extraLife.getExtraLifePositionRelativeToTheLogCenter());
 
         }
 
@@ -256,7 +261,7 @@ public class World {
         }
 
         // update all Bulldozer objects
-        if (background.get(BULLDOZER)!=null) {
+        if (background.get(BULLDOZER)!=null && !player.isRidden()) {
             for (Sprite sprite : background.get(BULLDOZER)) {
                 SolidableVehicle bulldozer = (SolidableVehicle) sprite;
                 bulldozer.update(delta);
@@ -355,9 +360,21 @@ public class World {
             }
         }
 
+
+
+
         // Update all of the sprites in the game
         player.update();
 
+    // Update whether the player get the extra life
+        if (ExtraLifeIsAppear && player.getBoundingBox().intersects(extraLife.getBoundingBox())){
+            player.getLives().add(new Life(LIVES_REFERENCE,
+                    Life.INITIAL_X_POSITION + player.getLives().size()*Life.THE_GAP,
+                    Life.INITIAL_Y_POSITION));
+            ExtraLifeIsAppear = false;
+            extraLifeIsEaten = true;
+            extraLife = null; // make it disappear
+        }
 
 
 

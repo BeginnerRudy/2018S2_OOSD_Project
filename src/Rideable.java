@@ -21,9 +21,13 @@ public interface Rideable {
 
         // give plater the speed of this rideable vehicle if player rides on a vehicle
         if (player.isRidden()) {
-            if (ridableSprite.isMoveToRight()) {
+            // if the rideable vehicle will not make player off screen, then update it's next step
+            if (ridableSprite.isMoveToRight() &&
+                    (player.getNextStep().getX() + (float) player.getImage().getWidth()/2 + ridableSprite.getSpeed() * delta)<App.SCREEN_WIDTH) {
                 player.getNextStep().setX(player.getNextStep().getX() + ridableSprite.getSpeed() * delta);
-            } else {
+            } else if (!ridableSprite.isMoveToRight() &&
+                    (player.getNextStep().getX() - (float) player.getImage().getWidth()/2 - ridableSprite.getSpeed() * delta) > 0)
+            {
                 player.getNextStep().setX(player.getNextStep().getX() - ridableSprite.getSpeed() * delta);
             }
         }
