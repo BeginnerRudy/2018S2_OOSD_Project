@@ -15,8 +15,6 @@ public class World {
     private static final String PLAYER_REFERENCE = "assets/frog.png";
     // define the image reference of lives
     private static final String LIVES_REFERENCE = "assets/lives.png";
-    // define the image reference of extra life
-    private static final String EXTRALIFE_REFERENCE = "assets/extralife.png";
     // PLAYER_INITIAL_X is the initial x coordinator of player
     private static final float PLAYER_INITIAL_X = 512;
     // PLAYER_INITIAL_Y is the initial y coordinator of player
@@ -74,23 +72,20 @@ public class World {
     private static final String LOGS = "logs";
 
     // The convert between second to millisecond
-    private static final float SECOND_TO_MILLISECOND = 1000;
+    private static final int SECOND_TO_MILLISECOND = 1000;
 
     // The period that the turtle should be in the water
-    private static final float TIME_OF_TURTLE_SHOULD_DISAPPEAR = 7.0f*SECOND_TO_MILLISECOND;
+    private static final int TIME_OF_TURTLE_SHOULD_DISAPPEAR = 7*SECOND_TO_MILLISECOND;
     // The period that the turtle should be on the water
-    private static final float TIME_OF_TURTLE_SHOULD_APPEAR = 2.0f*SECOND_TO_MILLISECOND;
+    private static final int TIME_OF_TURTLE_SHOULD_APPEAR = 2*SECOND_TO_MILLISECOND;
     // The period that extra life appear
 //    private static final float TIME_OF_EXTRA_LIFE_APPEAR = SECOND_TO_MILLISECOND*(25 + (float) Math.random()*10);
-    private static final float TIME_OF_EXTRA_LIFE_APPEAR = SECOND_TO_MILLISECOND*2;
+    public static final int TIME_OF_EXTRA_LIFE_APPEAR = SECOND_TO_MILLISECOND*2;
     // The period that extra life should disappear
-    private static final float TIME_OF_EXTRALIFE_DISAPPEAR = SECOND_TO_MILLISECOND*14f;
+    public static final int TIME_OF_EXTRALIFE_DISAPPEAR = SECOND_TO_MILLISECOND*14;
     // The period that extra life should move
-    private static final float TIME_OF_EXTRALIFE_MOVE = SECOND_TO_MILLISECOND*2f;
-    // The speed of Extra life
-    private static final float EXTRA_LIFE_SPEED = Tile.TILE_SIZE;
-    // The initial direction of Extra Life
-    private static final boolean EXTRA_LIFE_IS_MOVE_TO_RIGHT_INITIAL = true;
+    public static final int TIME_OF_EXTRALIFE_MOVE = SECOND_TO_MILLISECOND*2;
+
 
 
     // The x-coordinate for bike to reverse direction
@@ -105,7 +100,7 @@ public class World {
     // The HashMap with (String, ArrayList<Sprite>) to represent the "background" for level
     private HashMap<String, ArrayList<Sprite>> background;
     // the total time of the world (in milliseconds)
-    private float time;
+    private int time;
     // the extra life
     private ExtraLife extraLife;
     // The boolean value for whether extra life appear
@@ -117,7 +112,7 @@ public class World {
         // initialize the background of the world of level1
         // This background contains all the objects used in this game.
         // More details in the description  of method createTheBackground
-        background = this.createTheBackground(LEVEL0_REFERENCE);
+        background = this.createTheBackground(LEVEL1_REFERENCE);
 
         // begin with level 0
         this.currentLevel = LEVEL_0;
@@ -128,7 +123,7 @@ public class World {
             player.getLives().add(new Life(LIVES_REFERENCE, Life.INITIAL_X_POSITION + i * Life.THE_GAP, Life.INITIAL_Y_POSITION));
         }
 
-        this.time = 0f;
+        this.time = 0;
         ExtraLifeIsAppear = false;
 	}
 	
@@ -214,61 +209,34 @@ public class World {
             Random random = new Random();
             choosed_place =
                     (RideableVehicle) background.get(LOGS).get(random.nextInt(background.get(LOGS).size()-1));
-            extraLife = new ExtraLife(EXTRALIFE_REFERENCE, choosed_place.getPosition().getX(), choosed_place.getPosition().getY(),
-                    EXTRA_LIFE_SPEED, EXTRA_LIFE_IS_MOVE_TO_RIGHT_INITIAL);
+            extraLife = new ExtraLife(choosed_place);
         }else if (!((time%(TIME_OF_EXTRA_LIFE_APPEAR+TIME_OF_EXTRALIFE_DISAPPEAR))>TIME_OF_EXTRA_LIFE_APPEAR)){// need to disappear
             ExtraLifeIsAppear = false;
+            extraLife = null;// make it none existent
         }
 
         // update the extra life's position
         if (ExtraLifeIsAppear) {
             extraLife.setKilled(false);
 
-            // initial speed
-            if (choosed_place.isMoveToRight()){
-                extraLife.getNextStep().setX(extraLife.getPosition().getX() + choosed_place.getSpeed()*delta);
-            }else{
-                extraLife.getNextStep().setX(extraLife.getPosition().getX() - choosed_place.getSpeed()*delta);
-            }
+            // update the next move bb of the extra life
+            extraLife.updateExtraLifeRelativeXPosition(time, delta);
+            extraLife.getNextStepBB().setX(extraLife.getTheLog().getPosition().getX() + extraLife.getExtraLifePositionRelativeToTheLogCenter());
 
-            // own speed
-            if (time!=0 && (((time - TIME_OF_EXTRA_LIFE_APPEAR) % TIME_OF_EXTRALIFE_MOVE) < delta)) {
-                if (extraLife.isMoveToRight()) {
-                    extraLife.getNextStep().setX(extraLife.getNextStep().getX() + EXTRA_LIFE_SPEED);
-                } else {
-                    extraLife.getNextStep().setX(extraLife.getNextStep().getX() - EXTRA_LIFE_SPEED);
-                }
-            }
+            // check whether the next step of extra life is off the chosen log
+            if (!(extraLife.getNextStepBB().intersects(extraLife.getTheLog().getBoundingBox()))){
+                extraLife.setExtraLifeIsMoveToRight(!extraLife.extraLifeIsMoveToRight());
+                // since it is out of the log, it need take two more step back
 
-            // check boundary
-            for (Sprite sprite:background.get(WATER)){
-                KillableTile water = (KillableTile) sprite;
-                water.update(extraLife);
-            }
-
-            // update direction
-            if (extraLife.isKilled()){
-                extraLife.setMoveToRight(!extraLife.isMoveToRight());
+                extraLife.updateExtraLifeRelativeXPosition(time, delta);
+                extraLife.updateExtraLifeRelativeXPosition(time, delta);
             }
 
 
-            // make move
-            // initial speed
-            if (choosed_place.isMoveToRight()){
-                extraLife.getPosition().setX(extraLife.getPosition().getX() + choosed_place.getSpeed()*delta);
-            }else{
-                extraLife.getPosition().setX(extraLife.getPosition().getX() - choosed_place.getSpeed()*delta);
-            }
+            extraLife.getPosition().setX(extraLife.getTheLog().getPosition().getX() + extraLife.getExtraLifePositionRelativeToTheLogCenter());
 
-
-            if (time!=0 && (((time - TIME_OF_EXTRA_LIFE_APPEAR) % TIME_OF_EXTRALIFE_MOVE) < delta)) {
-                if (extraLife.isMoveToRight()) {
-                    extraLife.getPosition().setX(extraLife.getPosition().getX() + EXTRA_LIFE_SPEED);
-                } else {
-                    extraLife.getPosition().setX(extraLife.getPosition().getX() - EXTRA_LIFE_SPEED);
-                }
-            }
         }
+
         //update the Tree Tile for checking contacting with player
         for (Sprite sprite:background.get(TREE)){
             if (!player.isContactWithSolidSprite()) { // If the player is not contacted with solidable objects yet, check it out.
@@ -375,7 +343,7 @@ public class World {
         // update the position and life of player if it is killed
         if (player.isKilled()) {
             if (player.getLives() != null) {
-                if (player.getLives().size() > Player.MIN_NUM_OF_LIFE_TO_PLAY) {
+                if (player.getLives().size() >= Player.MIN_NUM_OF_LIFE_TO_PLAY) {
                     // remove the leftmost life
                     player.getLives().remove(player.getLives().size() - 1);
                     //restart the player's position
@@ -586,7 +554,7 @@ public class World {
      * @param sprite  The Sprite object to be added
      *
      * Description: This method would add one Sprite objects according to given String key value.
-     * */
+//     * */
     public void addSpriteIntoBackground(String key,  HashMap<String, ArrayList<Sprite>> background, Sprite sprite){
         // if there does not have Key called key in the background, then create one and add the sprite into it
         background.putIfAbsent(key, new ArrayList<>());
