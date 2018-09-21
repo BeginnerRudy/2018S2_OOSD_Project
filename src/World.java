@@ -12,72 +12,72 @@ public class World {
     /*Define CONSTANT*/
 
     // define the image reference of player
-    private static final String PLAYER_REFERENCE = "assets/frog.png";
+    public static final String PLAYER_REFERENCE = "assets/frog.png";
     // define the image reference of lives
-    private static final String LIVES_REFERENCE = "assets/lives.png";
+    public static final String LIVES_REFERENCE = "assets/lives.png";
     // PLAYER_INITIAL_X is the initial x coordinator of player
-    private static final float PLAYER_INITIAL_X = 512;
+    public static final float PLAYER_INITIAL_X = 512;
     // PLAYER_INITIAL_Y is the initial y coordinator of player
-    private static final float PLAYER_INITIAL_Y = 720;
+    public static final float PLAYER_INITIAL_Y = 720;
 
     // the reference for level0 source file
-    private static final String LEVEL0_REFERENCE = "assets/levels/0.lvl";
+    public static final String LEVEL0_REFERENCE = "assets/levels/0.lvl";
     // the reference for level1 source file
-    private static final String LEVEL1_REFERENCE = "assets/levels/1.lvl";
+    public static final String LEVEL1_REFERENCE = "assets/levels/1.lvl";
     // the number of values of an Tile objects in lvl file
-    private static final int NUM_OF_VALUES_OF_TILE = 3;
+    public static final int NUM_OF_VALUES_OF_TILE = 3;
     // the number of values of an Vehicle objects in lvl file
-    private static final int NUM_OF_VALUES_OF_VEHICLE = 4;
+    public static final int NUM_OF_VALUES_OF_VEHICLE = 4;
     // the INDEX of Object class in lvl File
-    private static final int INDEX_OF_OBJ_CLASS_IN_CSV = 0;
+    public static final int INDEX_OF_OBJ_CLASS_IN_CSV = 0;
     // the INDEX of x position in lvl File
-    private static final int INDEX_OF_X = 1;
+    public static final int INDEX_OF_X = 1;
     // the INDEX of y position in lvl File
-    private static final int INDEX_OF_Y = 2;
+    public static final int INDEX_OF_Y = 2;
     // the INDEX of Vehicle moving direction in lvl File
-    private static final int INDEX_OF_DIRECTION = 3;
+    public static final int INDEX_OF_DIRECTION = 3;
     // The number of runs need to finished to get to next level
-    private static final int NUM_OF_RUNS_TO_NEXT_LEVEL = 5;
+    public static final int NUM_OF_RUNS_TO_NEXT_LEVEL = 5;
     // The symbol to indicate level 0
-    private static final int LEVEL_0 = 0;
+    public static final int LEVEL_0 = 0;
     // The symbol to indicate level 1
-    private static final int LEVEL_1 = 1;
+    public static final int LEVEL_1 = 1;
     // The symbol to indicate level 2
-    private static final int LEVEL_2 = 2;
+    public static final int LEVEL_2 = 2;
 
 
     // the csv identifier for water
-    private static final String WATER = "water";
+    public static final String WATER = "water";
     // the csv identifier for water
-    private static final String GRASS = "grass";
+    public static final String GRASS = "grass";
     // the csv identifier for water
-    private static final String TREE = "tree";
+    public static final String TREE = "tree";
     // the hashMap key for FinishedPLayer
-    private static final String FINISHED_PLAYER = "FinishedPlayer";
+    public static final String FINISHED_PLAYER = "FinishedPlayer";
     // the csv identifier for BUS
-    private static final String BUS = "bus";
+    public static final String BUS = "bus";
     // the csv identifier for RACECAR
-    private static final String RACECAR = "racecar";
+    public static final String RACECAR = "racecar";
     // the csv identifier for BIKE
-    private static final String BIKE = "bike";
+    public static final String BIKE = "bike";
     // the csv identifier for BULLDOZER
-    private static final String BULLDOZER = "bulldozer";
+    public static final String BULLDOZER = "bulldozer";
     // the csv identifier for LOG
-    private static final String LOG = "log";
+    public static final String LOG = "log";
     // the csv identifier for LONGLOG
-    private static final String LONGLOG = "longLog";
+    public static final String LONGLOG = "longLog";
     // the csv identifier for TURTLE
-    private static final String TURTLE = "turtle";
+    public static final String TURTLE = "turtle";
     // the csv identifier for LONGLOG and LOG
-    private static final String LOGS = "logs";
+    public static final String LOGS = "logs";
 
     // The convert between second to millisecond
-    private static final int SECOND_TO_MILLISECOND = 1000;
+    public static final int SECOND_TO_MILLISECOND = 1000;
 
     // The period that the turtle should be in the water
-    private static final int TIME_OF_TURTLE_SHOULD_DISAPPEAR = 7*SECOND_TO_MILLISECOND;
+    public static final int TIME_OF_TURTLE_SHOULD_DISAPPEAR = 7*SECOND_TO_MILLISECOND;
     // The period that the turtle should be on the water
-    private static final int TIME_OF_TURTLE_SHOULD_APPEAR = 2*SECOND_TO_MILLISECOND;
+    public static final int TIME_OF_TURTLE_SHOULD_APPEAR = 2*SECOND_TO_MILLISECOND;
     // The period that extra life appear
 //    private static final float TIME_OF_EXTRA_LIFE_APPEAR = SECOND_TO_MILLISECOND*(25 + (float) Math.random()*10);
     public static final int TIME_OF_EXTRA_LIFE_APPEAR = SECOND_TO_MILLISECOND*2;
@@ -89,8 +89,8 @@ public class World {
 
 
     // The x-coordinate for bike to reverse direction
-    private static final float BIKE_REVERSE_24 = 24f;
-    private static final float BIKE_REVERSE_1000 = 1000f;
+    public static final float BIKE_REVERSE_24 = 24f;
+    public static final float BIKE_REVERSE_1000 = 1000f;
 
     /*Define Sprites and Background*/
     // declare the player
