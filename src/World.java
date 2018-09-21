@@ -110,7 +110,7 @@ public class World {
     // indicates whether the extra life is eaten
     private boolean extraLifeIsEaten;
 
-	public World() throws SlickException {
+	public World(){
         // initialize the background of the world of level1
         // This background contains all the objects used in this game.
         // More details in the description  of method createTheBackground
@@ -130,7 +130,7 @@ public class World {
         extraLifeIsEaten = false;
 	}
 	
-	public void update(Input input, int delta)  throws SlickException {
+	public void update(Input input, int delta){
 
 
 
@@ -511,7 +511,7 @@ public class World {
      *
      *Description: Return the center Position of the hole that the player current at.
      * */
-    public Position holeCenter(Player player){
+    private Position holeCenter(Player player){
         // The initial tree object has no effect on selecting tree later, only the
         // minLeftDistance and  minRightDistance does, thus set the position to same random number
         SoliableTile leftNearestTree = SoliableTile.createATree((float) Math.random(), (float) Math.random());
@@ -550,7 +550,7 @@ public class World {
      *
      * Description: This method update the currentLevel of the world according to the number of runs the player finish
      * */
-    public int updateLevel(boolean isFinished){
+    private int updateLevel(boolean isFinished){
         int levelOutPut = LEVEL_0;
         // If now meet the requirement for turning to next level
         if (isFinished){
@@ -571,8 +571,8 @@ public class World {
      * @param sprite  The Sprite object to be added
      *
      * Description: This method would add one Sprite objects according to given String key value.
-//     * */
-    public void addSpriteIntoBackground(String key,  HashMap<String, ArrayList<Sprite>> background, Sprite sprite){
+     * */
+    private void addSpriteIntoBackground(String key,  HashMap<String, ArrayList<Sprite>> background, Sprite sprite){
         // if there does not have Key called key in the background, then create one and add the sprite into it
         background.putIfAbsent(key, new ArrayList<>());
         background.get(key).add(sprite);

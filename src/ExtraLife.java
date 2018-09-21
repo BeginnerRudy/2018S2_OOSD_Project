@@ -94,21 +94,8 @@ public class ExtraLife extends Player{
      *
      * Description: The setter of extraLifePositionRelativeToTheLogCenter
      * */
-    public void setExtraLifePositionRelativeToTheLogCenter(float extraLifePositionRelativeToTheLogCenter) {
+    private void setExtraLifePositionRelativeToTheLogCenter(float extraLifePositionRelativeToTheLogCenter) {
         this.extraLifePositionRelativeToTheLogCenter = extraLifePositionRelativeToTheLogCenter;
     }
 
-    /**
-     *
-     *
-     */
-    public void updateNextStep(){}
-
-    /**
-     *
-     *
-     * */
-    public void move(float time){
-
-    }
 }
