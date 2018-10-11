@@ -82,11 +82,14 @@ public class Level {
     private Timer time;
     // the boolean value to indicate whether the turtle is above the water
     private boolean isTurtleAboveWater;
+    // the extra life object
+    private ExtraLife extraLife;
 
     public Level(String levelSrc, int currentLevel){
         this.currentLevel = currentLevel;
         this.level = createTheBackground(levelSrc);
         this.time = new Timer();
+        this.extraLife = new ExtraLife();
         // The level 0  does not have turtle.
         isTurtleAboveWater = false;
     }
@@ -118,6 +121,7 @@ public class Level {
 
         // update the position of all sprites which are movable in the world of the current level
         this.level.values().forEach(t->t.forEach(i -> i.update(delta)));
+        this.extraLife.update(time, player, this.level.get(LOGS));
 
         // update the behaviour of all sprites in the world of the current level
 
@@ -223,6 +227,11 @@ public class Level {
             if (turtles!=null) {
                 turtles.forEach(t -> t.render());
             }
+        }
+
+        // If the extra life is available, draw it. Otherwise, do not draw it
+        if (extraLife.isAvailable()){
+            extraLife.render();
         }
     }
     /**Name: private void createTheBackground(String LEVEL_REFERENCE);

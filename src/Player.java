@@ -177,16 +177,6 @@ public class Player extends Sprite{
         isRidden = ridden;
     }
 
-    /** Method signature: public void setLives(ArrayList<Life> lives);
-     *
-     * @param lives The given lives ArrayList
-     *
-     * Description: The setter for the attribute lives
-     * */
-    public void setLives(ArrayList<Life> lives) {
-        this.lives = lives;
-    }
-
     /**
      * Method Signature:  private Position move(Input input);
      *
@@ -300,17 +290,6 @@ public class Player extends Sprite{
         return lives;
     }
 
-
-    /** Method signature: public boolean isGameOver();
-     *
-//     * no argument
-//     *
-//     * Description: The getter of isGameOver
-//     * */
-//    public boolean isGameOver() {
-//        return isGameOver;
-//    }
-
     /** Method signature: public boolean isRidden();
      *
      * no argument
@@ -352,7 +331,7 @@ public class Player extends Sprite{
      * Method signature: public void resetPlayerBooleanBeforeUpdate()
      *
      * Description: This method set the isRidden, isKilled, isContactWithSprite and isInHole to false. Because for each
-     *              update in the world, we need to detect these boolean and decide whether to set to ture..
+     *              update in the world, we need to detect these boolean and decide whether to set to true.
      * */
     public void resetPlayerBooleanBeforeUpdate(){
         this.isRidden = false;

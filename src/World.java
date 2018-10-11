@@ -15,7 +15,7 @@ public class World {
 	public World(){
         //initialize the attribute of world
         // initialize the level of the world
-        this.level = new Level(Level.LEVEL1_REFERENCE, Level.LEVEL_1);
+        this.level = new Level(Level.LEVEL0_REFERENCE, Level.LEVEL_0);
         //initialize the player
         this.player = new Player();
 	}
