@@ -8,6 +8,8 @@ public class Level {
     public static final String LEVEL0_REFERENCE = "assets/levels/0.lvl";
     // the reference for level1 source file
     public static final String LEVEL1_REFERENCE = "assets/levels/1.lvl";
+    // the number of runs that the player need to finish to go to next level
+    public static final int NUM_OF_RUNS_TO_NEXT_LEVEL = 5;
 
     // The symbol to indicate level 0
     public static final int LEVEL_0 = 0;
@@ -58,6 +60,11 @@ public class Level {
     public static final String[] KEYS_OF_RIDEABLE_VEHICLE = new String[]{LOGS, TURTLE};
     public static final String[] KEYS_OF_SPRITES_BEHAVIOUR_NEED_TO_BE_UPDATED = new String[]{ TREE,
             FINISHED_PLAYER, BULLDOZER, BUS, RACECAR, BIKE, WATER};
+
+    // Layer order means the things has smaller index will be drawn first.
+    String[] KEYS_IN_LAYER_ORDER = new String[]{GRASS, WATER, TREE,
+            BUS, BULLDOZER, RACECAR, BIKE,
+            LOGS, FINISHED_PLAYER};
 
     // The HashMap for storing objects in level
     private HashMap<String, ArrayList<Sprite>> level;
@@ -149,7 +156,17 @@ public class Level {
         }
     }
 
+    /**
+     * Method signature: public void render()
+     *
+     * Description: This method draws all the sprites in the current level.
+     *
+     * */
+    public void render(){
 
+        // render all the sprite in the current level.
+        this.level.values().forEach(t->t.forEach(i -> i.render()));
+    }
     /**Name: private void createTheBackground(String LEVEL_REFERENCE);
      *
      * @param LEVEL_REFERENCE => The reference of the level CSV file.
@@ -216,7 +233,6 @@ public class Level {
         return output;
     }
 
-
     /**Method signature: public void addSpriteIntoBackground(String key,  HashMap<String, ArrayList<Sprite>> background, Sprite sprite);
      *
      * @param key The key of value to add
@@ -231,14 +247,6 @@ public class Level {
         background.get(key).add(sprite);
     }
 
-    /** Method signature: public int getCurrentLevel()
-     *
-     * @return currentLevel
-     * */
-    public int getCurrentLevel() {
-        return currentLevel;
-    }
-
     /** Method signature: public HashMap<String, ArrayList<Sprite>> getLevel()
      *
      * @return level
@@ -246,15 +254,6 @@ public class Level {
     public HashMap<String, ArrayList<Sprite>> getLevel() {
         return level;
     }
-
-    /** Method signature: public void setCurrentLevel(int currentLevel)
-     *
-     * @param currentLevel The given current level to set.
-     * */
-    public void setCurrentLevel(int currentLevel) {
-        this.currentLevel = currentLevel;
-    }
-
 
     /** Method signature: public Position holeCenter(Player player);
      *
@@ -293,6 +292,54 @@ public class Level {
             }
         }
         return leftNearestTree.getPosition().midPoint(rightNeatestTree.getPosition());
+    }
+
+    /**
+     * Method signature: public void checkLevel()
+     *
+     * Description: This method check the number of Finished Player to decide whether to ge to next level.
+     *
+     * */
+    public void checkLevel(){
+        // check is it the time to turn to next level
+        int numOfRunsFinished = 0;
+        if (level.get(Level.FINISHED_PLAYER)!=null) {
+            numOfRunsFinished = level.get(Level.FINISHED_PLAYER).size();
+        }
+        boolean isFinishedAll = (numOfRunsFinished  == NUM_OF_RUNS_TO_NEXT_LEVEL);
+
+        // if current level is finished, turn to next level
+        if (isFinishedAll) {
+            this.currentLevel = this.updateLevel(isFinishedAll);
+            // swap to new level according to current level
+            if (this.currentLevel == Level.LEVEL_2) {
+                System.exit(0);
+            } else if (this.currentLevel == Level.LEVEL_1) {
+                // reinitialize all the Tiles, Vehicles, FinishedPlayers and ExtraLife from current "background"
+                this.level = createTheBackground(Level.LEVEL1_REFERENCE);
+            }
+                // do nothing, since we start with level 0.
+        }
+    }
+
+    /**Method signature:public int updateLevel(int numOfRunsFinished);
+     *
+     * @param isFinished => The boolean for whether current level is finished
+     *
+     * Description: This method update the currentLevel of the world according to the number of runs the player finish
+     * */
+    private int updateLevel(boolean isFinished){
+        int levelOutPut = Level.LEVEL_0;
+        // If now meet the requirement for turning to next level
+        if (isFinished){
+            if (this.currentLevel == Level.LEVEL_0) {
+                levelOutPut = Level.LEVEL_1;
+            }
+            if (this.currentLevel == Level.LEVEL_1) {
+                levelOutPut = Level.LEVEL_2;
+            }
+        }
+        return levelOutPut;
     }
 
 }

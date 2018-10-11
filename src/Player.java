@@ -67,6 +67,12 @@ public class Player extends Sprite{
     @Override
     public void render(){
         super.getImage().drawCentered(super.getPosition().getX(),super.getPosition().getY());
+        // draw the lives
+        if (lives!=null) {
+            for (Life life : lives) {
+                life.render();
+            }
+        }
     }
 
     /** Method signature: public void updatePlayNextMove(Input input);
