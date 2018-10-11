@@ -5,47 +5,34 @@ import java.util.Random;
 
 
 public class World {
-    /*Define CONSTANT*/
-    // The convert between second to millisecond
-    public static final int SECOND_TO_MILLISECOND = 1000;
-
-    // The period that the turtle should be in the water
-    public static final int TIME_OF_TURTLE_SHOULD_DISAPPEAR = 7*SECOND_TO_MILLISECOND;
-    // The period that the turtle should be on the water
-    public static final int TIME_OF_TURTLE_SHOULD_APPEAR = 2*SECOND_TO_MILLISECOND;
-
-
-    /*Define Sprites and Background*/
+    /*********************************Define Sprites and Background********************************/
     // declare the player
     private Player player;
     // declare the level of the world
     private Level level;
-    // the total time of the world (in milliseconds)
-    private int time;
 
 
 	public World(){
         //initialize the attribute of world
-        this.level = new Level(Level.LEVEL1_REFERENCE, Level.LEVEL_0);
+        // initialize the level of the world
+        this.level = new Level(Level.LEVEL1_REFERENCE, Level.LEVEL_1);
         //initialize the player
-        player = new Player();
-        //initialize the lives of player
-        this.time = 0;
+        this.player = new Player();
 	}
 	
 	public void update(Input input, int delta){
-	    // check is it the time to turn to next level
-        level.checkLevel();
+        // Check whether the game is over. If it is over, then exit the game
+        if (player.isGameOver()) System.exit(0);
+	    // check is it the time to turn to next level, if it is then swap to next level.
+        level.checkLevel(player);
         // reset the boolean values of player at the beginning of updating
         player.resetPlayerBooleanBeforeUpdate();
-        // update the position and BoundingBox of player's next position depends on input
+        // update the position and BoundingBox of player's next position depends on input of the user.
         player.updatePlayNextMove(input);
-        // update the position and behaviour of sprites in the current level of the world
+        // update the position and behaviour of all sprites in the current level of the world depending on the player's next move.
         level.update(player, delta);
-        // Update all of the sprites in the game
+        // Update the player, include its position, lives and whether killed
         player.update();
-        // update the time
-        time += delta;
 	}
 	
 	public void render(Graphics g) {

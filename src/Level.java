@@ -57,7 +57,6 @@ public class Level {
     public static final String LOGS = "logs";
 
     // The key of sprites need to be updated the behaviour in order
-    public static final String[] KEYS_OF_RIDEABLE_VEHICLE = new String[]{LOGS, TURTLE};
     public static final String[] KEYS_OF_SPRITES_BEHAVIOUR_NEED_TO_BE_UPDATED = new String[]{ TREE,
             FINISHED_PLAYER, BULLDOZER, BUS, RACECAR, BIKE, WATER};
 
@@ -66,14 +65,30 @@ public class Level {
             BUS, BULLDOZER, RACECAR, BIKE,
             LOGS, FINISHED_PLAYER};
 
+    // The convert between second to millisecond
+    public static final long SECOND_TO_MILLISECOND = 1000;
+    // The period that the turtle should be in the water
+    public static final long TIME_OF_TURTLE_SHOULD_DISAPPEAR = 7*SECOND_TO_MILLISECOND;
+    // The period that the turtle should be on the water
+    public static final long TIME_OF_TURTLE_SHOULD_APPEAR = 2*SECOND_TO_MILLISECOND;
+    // The time for one above and under water cycle for turtles
+    public static final long TIME_OF_CIRCLE_OF_TURTLES = TIME_OF_TURTLE_SHOULD_DISAPPEAR + TIME_OF_TURTLE_SHOULD_APPEAR;
+
     // The HashMap for storing objects in level
     private HashMap<String, ArrayList<Sprite>> level;
     // declare the current level of the world
     private int currentLevel;
+    // the total time of the level (in milliseconds)
+    private Timer time;
+    // the boolean value to indicate whether the turtle is above the water
+    private boolean isTurtleAboveWater;
 
     public Level(String levelSrc, int currentLevel){
         this.currentLevel = currentLevel;
         this.level = createTheBackground(levelSrc);
+        this.time = new Timer();
+        // The level 0  does not have turtle.
+        isTurtleAboveWater = false;
     }
 
     /**
@@ -95,16 +110,38 @@ public class Level {
             });
         }
 
+        // update whether the turtles are above water or not
+        // since turtles only occur at level 1
+        if (this.currentLevel == LEVEL_1){
+            isTurtleAboveWater = time.areTurtlesAboveWater();
+        }
+
         // update the position of all sprites which are movable in the world of the current level
         this.level.values().forEach(t->t.forEach(i -> i.update(delta)));
 
         // update the behaviour of all sprites in the world of the current level
+
         // First, the rideable vehicles
-        for (String key:KEYS_OF_RIDEABLE_VEHICLE){
-            ArrayList<Sprite> sprites = this.level.get(key);
+        ArrayList<Sprite> logs = this.level.get(LOGS);
+        // if the ArrayList of this Sprite as described by the given key is not null, then iterate over it
+        if (logs!=null) {
+            logs.forEach(t -> {
+                        // if the player is not ridden on anything yet, then keep finding
+                        if (!player.isRidden()) {
+                            t.behaviour(player, delta);
+                        }
+                        // else if the player is already ridden on something, ok, since player could only ride on
+                        // one thing each time, no need to detecting further, do nothing
+                    }
+            );
+        }
+
+        // If the turtles are above waters, then we could decide whether the player is ridden on one of them.
+        if (isTurtleAboveWater){
+            ArrayList<Sprite> turtles = this.level.get(TURTLE);
             // if the ArrayList of this Sprite as described by the given key is not null, then iterate over it
-            if (sprites!=null) {
-                sprites.forEach(t -> {
+            if (turtles!=null) {
+                turtles.forEach(t -> {
                             // if the player is not ridden on anything yet, then keep finding
                             if (!player.isRidden()) {
                                 t.behaviour(player, delta);
@@ -116,7 +153,7 @@ public class Level {
             }
         }
 
-
+        // Then, update the behaviour of other sprites in the current level.
         for (String key:KEYS_OF_SPRITES_BEHAVIOUR_NEED_TO_BE_UPDATED){
             ArrayList<Sprite> sprites = this.level.get(key);
             // if the ArrayList of this Sprite as described by the given key is not null, then iterate over it
@@ -128,7 +165,6 @@ public class Level {
 
 
         // update the condition that whether the player is in a finishing hole
-
         // if the nextStep of player does not contact with a solid tree object, check whether is the nextStep is in a hole.
         if (!player.isContactWithSolidSprite()) {
             for (Sprite sprite : level.get(Level.TREE)) {
@@ -154,6 +190,10 @@ public class Level {
                 }
             }
         }
+
+
+        // update the time of the current world
+        time.setTime(time.getTime() + delta);
     }
 
     /**
@@ -165,7 +205,25 @@ public class Level {
     public void render(){
 
         // render all the sprite in the current level.
-        this.level.values().forEach(t->t.forEach(i -> i.render()));
+
+        // render the turtles
+
+        for (String key:KEYS_IN_LAYER_ORDER){
+            ArrayList<Sprite> sprites = this.level.get(key);
+            // if the ArrayList exists, then render the sprites inside it.
+            if (sprites != null){
+                sprites.forEach(t->t.render());
+            }
+        }
+
+        // If the turtles are above waters, then draw it.
+        if (isTurtleAboveWater){
+            ArrayList<Sprite> turtles = this.level.get(TURTLE);
+            // if the ArrayList of this Sprite as described by the given key is not null, then iterate over it
+            if (turtles!=null) {
+                turtles.forEach(t -> t.render());
+            }
+        }
     }
     /**Name: private void createTheBackground(String LEVEL_REFERENCE);
      *
@@ -247,14 +305,6 @@ public class Level {
         background.get(key).add(sprite);
     }
 
-    /** Method signature: public HashMap<String, ArrayList<Sprite>> getLevel()
-     *
-     * @return level
-     * */
-    public HashMap<String, ArrayList<Sprite>> getLevel() {
-        return level;
-    }
-
     /** Method signature: public Position holeCenter(Player player);
      *
      * @param player The reference to player
@@ -300,20 +350,27 @@ public class Level {
      * Description: This method check the number of Finished Player to decide whether to ge to next level.
      *
      * */
-    public void checkLevel(){
+    public void checkLevel(Player player){
         // check is it the time to turn to next level
         int numOfRunsFinished = 0;
-        if (level.get(Level.FINISHED_PLAYER)!=null) {
-            numOfRunsFinished = level.get(Level.FINISHED_PLAYER).size();
+        if (level.get(FINISHED_PLAYER)!=null) {
+            numOfRunsFinished = level.get(FINISHED_PLAYER).size();
         }
         boolean isFinishedAll = (numOfRunsFinished  == NUM_OF_RUNS_TO_NEXT_LEVEL);
 
         // if current level is finished, turn to next level
         if (isFinishedAll) {
-            this.currentLevel = this.updateLevel(isFinishedAll);
+            // If now meet the requirement for turning to next level
+            if (this.currentLevel == Level.LEVEL_0) {
+                this.currentLevel = Level.LEVEL_1;
+            }
+            else if (this.currentLevel == Level.LEVEL_1) {
+                this.currentLevel = Level.LEVEL_2;
+            }
+
             // swap to new level according to current level
             if (this.currentLevel == Level.LEVEL_2) {
-                System.exit(0);
+                player.setGameOver(true);
             } else if (this.currentLevel == Level.LEVEL_1) {
                 // reinitialize all the Tiles, Vehicles, FinishedPlayers and ExtraLife from current "background"
                 this.level = createTheBackground(Level.LEVEL1_REFERENCE);
@@ -321,25 +378,4 @@ public class Level {
                 // do nothing, since we start with level 0.
         }
     }
-
-    /**Method signature:public int updateLevel(int numOfRunsFinished);
-     *
-     * @param isFinished => The boolean for whether current level is finished
-     *
-     * Description: This method update the currentLevel of the world according to the number of runs the player finish
-     * */
-    private int updateLevel(boolean isFinished){
-        int levelOutPut = Level.LEVEL_0;
-        // If now meet the requirement for turning to next level
-        if (isFinished){
-            if (this.currentLevel == Level.LEVEL_0) {
-                levelOutPut = Level.LEVEL_1;
-            }
-            if (this.currentLevel == Level.LEVEL_1) {
-                levelOutPut = Level.LEVEL_2;
-            }
-        }
-        return levelOutPut;
-    }
-
 }

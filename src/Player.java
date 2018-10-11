@@ -121,7 +121,6 @@ public class Player extends Sprite{
                     this.restart();
                 }else{// not enough life to play, GameOver
                     this.setGameOver(true);
-                    System.exit(0);
                 }
             }
         }
@@ -277,6 +276,18 @@ public class Player extends Sprite{
      * */
     public boolean isKilled() {
         return isKilled;
+    }
+
+    /** Method signature: public boolean isGameOver();
+     *
+     * no argument
+     *
+     * Description: The getter of isGameOver
+     *
+     * @return The boolean value of is game over.
+     * */
+    public boolean isGameOver() {
+        return isGameOver;
     }
 
     /** Method signature: public ArrayList<Life> getLives();
