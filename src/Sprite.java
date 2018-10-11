@@ -33,6 +33,7 @@ public abstract class Sprite {
      *
      * Description: This method create a image and set the player's position by the given x, y as well as
      *                 create a BoundingBox for it.
+     *
      * */
     private void setupSprite(String imageSrc, float x, float y) {
         try {
@@ -51,13 +52,26 @@ public abstract class Sprite {
         this.image.drawCentered(this.position.getX(), this.position.getY());
     }
 
-    //	I am going to create an interface called Updatable instead of this update method.
-    public void update(Input input, int delta) {
+
+    /**
+     * Method signature: public abstract void behaviour(Player player);
+     * Description: This is an abstract method, it body part would be overridden in each concrete class.
+     *
+     * @param player The Player object to make behaviour on.
+     * @param delta The milliseconds since last frame is passed.
+     * */
+    public abstract void behaviour(Player player, int delta);
+
+    /**
+     * Method signature: public void update(int delta)
+     *
+     * Description: This method is to update the position of sprites, by default it do nothing to the sprites
+     * */
+    public void update(int delta) {
         // How can this one method deal with different types of sprites;
         // By overloading
-        // update the bounding box
-        this.bb.setX(this.position.getX());
-        this.bb.setY(this.position.getY());
+
+        // By default, do nothing for those object in the world that is not movable
     }
 
 

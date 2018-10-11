@@ -1,4 +1,4 @@
-public class RideableVehicle extends Vehicle implements Rideable{
+public class RideableVehicle extends Vehicle{
     // define the image reference of log
     private static final String LOG_REFERENCE = "assets/log.png";
     // define the image reference of longlog
@@ -16,9 +16,9 @@ public class RideableVehicle extends Vehicle implements Rideable{
         super(imageSrc, x, y, speed, isMoveToRight);
     }
 
-    /** Method signature: public void updateRideableBehaviour(Player player, int delta);
+    /** Method signature: public void behaviour(Player player, int delta);
      *
-     * @param player => The reference to player
+     * @param player The reference to player
      * @param delta The milliseconds since last frame passed.
      *
      * Description: This method update the player.isKilled and player.isRidden
@@ -27,8 +27,40 @@ public class RideableVehicle extends Vehicle implements Rideable{
      *              As well as update player's next move.
      *              Otherwise, do nothing.
      * */
-    public void updateRideableBehaviour(Player player, int delta){
-        playerRide(player, this, delta);
+    public void behaviour(Player player, int delta){
+        playerRide(player, delta);
+    }
+
+    /**Method signature: void playerRide(Player player, Sprite ridableSprite){
+     *
+     * @param player  The reference to player
+     * @param delta The milliseconds since last frame passed.
+     *
+     * Description: This default would check whether ridableSprite contacts with player.
+     *                    If it does, set player.isRidden to true, and update player.position.
+     *                    Otherwise, do nothing.
+     * */
+
+
+    private void playerRide(Player player, int delta){
+        // if the rideableSprite contacts with the BoundingBox of the next position of the player, then make player to ride.
+        // And, set the player.isRidden to true to represent it.
+        if (super.getBoundingBox().intersects(player.getNextStepBB())){
+            player.setRidden(true); // make player to ride
+        }
+
+        // give player the speed of this rideable vehicle if player rides on a vehicle
+        if (player.isRidden()){
+            // if the rideable vehicle will not make player off screen, then update it's next step
+            if (this.isMoveToRight() &&
+                    (player.getNextStep().getX() + (float) player.getImage().getWidth()/2 + this.getSpeed() * delta)<App.SCREEN_WIDTH) {
+                player.getNextStep().setX(player.getNextStep().getX() + this.getSpeed() * delta);
+            } else if (!this.isMoveToRight() &&
+                    (player.getNextStep().getX() - (float) player.getImage().getWidth()/2 - this.getSpeed() * delta) > 0)
+            {
+                player.getNextStep().setX(player.getNextStep().getX() - this.getSpeed() * delta);
+            }
+        }
     }
 
     /**Method signature: public Rideable createALog(float x, float y, float speed, boolean isMoveToRight);

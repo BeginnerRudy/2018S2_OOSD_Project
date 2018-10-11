@@ -9,14 +9,12 @@ public interface Killable {
      *                    Otherwise, do nothing.
      * */
 
-
     default void killPlayer(Player player, Sprite killableSprite){
         // if the killableSprite contacts with the BoundingBox of the next position of the player and not ride on any thing,
-        // then make player killed.
+        // then make player been killed by setting player.isKilled to true.
         if (killableSprite.getBoundingBox().intersects(player.getNextStepBB())&&!player.isRidden()){
             player.setKilled(true);
         }
-        // else case which is that no killableSprite contacts with the player is
-        // handled by setting the player.isKilled to false each time update in the update of Class world
+        // else => no behaviour affect.
     }
 }

@@ -14,15 +14,6 @@ public class Tile extends Sprite {
         super(imgSrc, x, y);
     }
 
-    /**Method signature: public Tile(Tile copy);
-     *
-     * @param copy The reference to copy
-     *
-     * Description: This a copy constructor for Tile
-     * */
-    public Tile(Tile copy){
-        super(copy);
-    }
 
     /**Method signature: public static Tile createAGrass(float x, float y);
      *
@@ -35,4 +26,16 @@ public class Tile extends Sprite {
         return new Tile(GRASS_REFERENCE, x, y);
     }
 
+    /**
+     * Method signature: public void behaviour(Player player);
+     * Description: This is an empty method, since the grass does not interact with the player
+     *
+     * @param player The Player object to make behaviour on
+     * @param delta The milliseconds since last frame is passed. It does not make se here,
+     *                   but may be used in future development.
+     * */
+    @Override
+    public void behaviour(Player player, int delta){
+        // empty, do nothing.
+    }
 }

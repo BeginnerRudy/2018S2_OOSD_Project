@@ -1,7 +1,6 @@
 import org.newdawn.slick.SlickException;
 
-public class Vehicle extends Sprite{
-    private static final float RIGHT_EDGE_OF_SCREEN = 0;
+public abstract class Vehicle extends Sprite{
     private float speed;
     private boolean isMoveToRight;
 
@@ -11,6 +10,15 @@ public class Vehicle extends Sprite{
         this.isMoveToRight = isMoveToRight;
     }
 
+    /**
+     * Method signature: public void update(int delta)
+     *
+     * Description: This is a method that override the one in its superclass Sprite.
+     * This method update the position of Vehicle with according to delta
+     *
+     * @param delta The milliseconds since last frame passed
+     * */
+    @Override
     public void update(int delta){
         if (this.isMoveToRight){
             float tailOfVehicle = super.getPosition().getX()-(float)super.getImage().getWidth()/2;
@@ -21,7 +29,7 @@ public class Vehicle extends Sprite{
             }
         }else{
             float headOfVehicle = this.getPosition().getX()+(float)this.getImage().getWidth()/2;
-            if (headOfVehicle < RIGHT_EDGE_OF_SCREEN){// If the vehicle is out of left side screen, make it appear at right side of screen
+            if (headOfVehicle < App.SCREEN_LEFT_BOUND){// If the vehicle is out of left side screen, make it appear at right side of screen
                 super.getPosition().setX(App.SCREEN_WIDTH+(float)this.getImage().getWidth()/2);
             }else {// update the x-coordinate according to the speed and delta
                 super.getPosition().setX(this.getPosition().getX() - speed*delta);
@@ -34,15 +42,15 @@ public class Vehicle extends Sprite{
         this.getBoundingBox().setY(this.getPosition().getY());
     }
 
-    /** Method signature: public void setSpeed(float speed);
+    /**
+     * Method signature: public abstract void behaviour(Player player);
+     * Description: This is an abstract method, it body part would be overridden in each concrete class.
      *
-     * @param speed The given speed value to set
-     *
-     * Description: The setter for the attribute speed
+     * @param player The Player object to make behaviour on.
+     * @param delta The milliseconds since last frame is passed. It does not make se here,
+     *                         but may be used in future development.
      * */
-    public void setSpeed(float speed) {
-        this.speed = speed;
-    }
+    public abstract void behaviour(Player player, int delta);
 
     /** Method signature: public void setMoveToRight(boolean moveToRight);
      *

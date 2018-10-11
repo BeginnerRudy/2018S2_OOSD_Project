@@ -24,9 +24,9 @@ public class SolidableVehicle extends Vehicle implements Solidable {
     }
 
 
-    /** Method signature: public void updateSolidBehaviour(Player player), int delta;
+    /** Method signature: public void behaviour(Player player), int delta;
      *
-     * @param player => The reference to player
+     * @param player  The reference to player
      * @param delta The milliseconds since last frame passed
      *
      * Description: This method update the player.isContactWithSolidSprite and solidableVehicle.isContactWithPlayer
@@ -34,8 +34,7 @@ public class SolidableVehicle extends Vehicle implements Solidable {
      *              If it does, set this attribute to true.
      *              Otherwise, do nothing.
      * */
-
-    public void updateSolidBehaviour(Player player, int delta){
+    public void behaviour(Player player, int delta){
         this.solidPlayer(player, this);
         if (this.isContactWithPlayer) {
             if (super.isMoveToRight()) {//push player to the right
@@ -54,7 +53,7 @@ public class SolidableVehicle extends Vehicle implements Solidable {
         }
     }
 
-    /**Method signature: default void solidPlayer(Player player, Sprite solidSprite){
+    /**Method signature: default void solidPlayer(Player player, Sprite solidSprite)
      *
      * @param player => The reference to player
      * @param solidSprite => The reference to a solid Sprite (implements Solidable interface)

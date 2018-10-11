@@ -11,11 +11,11 @@ public interface Solidable {
 
 
     default void solidPlayer(Player player, Sprite solidSprite){
-        // if the solidSprite contacts with the BoundingBox of the next position of the player, then make player cannot move further.
+        // if the solidSprite contacts with the BoundingBox of the next position of the player,
+        // then make player.isContactWithSolidSprite to true to represent it.
         if (solidSprite.getBoundingBox().intersects(player.getNextStepBB())){
             player.setContactWithSolidSprite(true);
         }
-        // else case which is that no solidSprite contacts with the player is
-        // handled by setting the player.isContactWithSolidSprite to false each time update in the update of Class world
+        // else => nothing happen
     }
 }

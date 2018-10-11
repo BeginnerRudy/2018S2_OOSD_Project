@@ -6,6 +6,14 @@ import utilities.BoundingBox;
 import java.util.ArrayList;
 
 public class Player extends Sprite{
+    // define the image reference of lives
+    public static final String LIVES_REFERENCE = "assets/lives.png";
+    // define the image reference of player
+    public static final String PLAYER_REFERENCE = "assets/frog.png";
+    // PLAYER_INITIAL_X is the initial x coordinator of player
+    public static final float PLAYER_INITIAL_X = 512;
+    // PLAYER_INITIAL_Y is the initial y coordinator of player
+    public static final float PLAYER_INITIAL_Y = 720;
     public static final float STEP_SIZE = 48;
     public static final int INITIAL_NUMBER_OF_LIVES = 3; //The number of lives that player has while starting game
     public static final int MIN_NUM_OF_LIFE_TO_PLAY = 1; //The minimun number of lives needed to play
@@ -19,9 +27,9 @@ public class Player extends Sprite{
     private ArrayList<Life> lives;
 
     // The constructor of Player
-    public Player(String imgSrc, float x, float y)  {
-        super(imgSrc, x, y);
-        nextStep = new Position(x, y); // Initialize the next step Position to the start position
+    public Player()  {
+        super(PLAYER_REFERENCE, PLAYER_INITIAL_X, PLAYER_INITIAL_Y);
+        nextStep = new Position(PLAYER_INITIAL_X, PLAYER_INITIAL_Y); // Initialize the next step Position to the start position
                                         // due to that there is no information about next step as game just started
         isContactWithSolidSprite = false;
         isInAHole = false;
@@ -30,13 +38,28 @@ public class Player extends Sprite{
         isRidden = false;
 
         try {
-            nextStepBB = new BoundingBox(new Image(imgSrc), x, y);
+            nextStepBB = new BoundingBox(new Image(PLAYER_REFERENCE), PLAYER_INITIAL_X, PLAYER_INITIAL_Y);
         } catch (SlickException e) {
             e.printStackTrace();
         }
 
 
         lives = new ArrayList<>();
+        this.addLives(INITIAL_NUMBER_OF_LIVES);
+    }
+
+
+    /**
+     * Method signature: public void behaviour(Player player);
+     * Description: This is an empty method, since the player has no behaviour on itself.
+     *
+     * @param player The Player object to make behaviour on
+     * @param delta The milliseconds since last frame is passed. It does not make se here,
+     *                         but may be used in future development.
+     * */
+    @Override
+    public void behaviour(Player player, int delta){
+        // empty, do nothing.
     }
 
     // overloading the render method here
@@ -79,6 +102,23 @@ public class Player extends Sprite{
         // update the bounding box
         super.getBoundingBox().setX(super.getPosition().getX());
         super.getBoundingBox().setY(super.getPosition().getY());
+
+
+
+        // update the position and life of player if it is killed
+        if (this.isKilled()) {
+            if (this.getLives() != null) {
+                if (this.getLives().size() >= Player.MIN_NUM_OF_LIFE_TO_PLAY) {
+                    // remove the leftmost life
+                    this.getLives().remove(this.getLives().size() - 1);
+                    //restart the player's position
+                    this.restart();
+                }else{// not enough life to play, GameOver
+                    this.setGameOver(true);
+                    System.exit(0);
+                }
+            }
+        }
     }
 
     /** Method signature: public void setContactWithSolidSprite(boolean isContactWithSolidSprite);
@@ -130,6 +170,16 @@ public class Player extends Sprite{
      * */
     public void setRidden(boolean ridden) {
         isRidden = ridden;
+    }
+
+    /** Method signature: public void setLives(ArrayList<Life> lives);
+     *
+     * @param lives The given lives ArrayList
+     *
+     * Description: The setter for the attribute lives
+     * */
+    public void setLives(ArrayList<Life> lives) {
+        this.lives = lives;
     }
 
     /**
@@ -236,13 +286,13 @@ public class Player extends Sprite{
 
     /** Method signature: public boolean isGameOver();
      *
-     * no argument
-     *
-     * Description: The getter of isGameOver
-     * */
-    public boolean isGameOver() {
-        return isGameOver;
-    }
+//     * no argument
+//     *
+//     * Description: The getter of isGameOver
+//     * */
+//    public boolean isGameOver() {
+//        return isGameOver;
+//    }
 
     /** Method signature: public boolean isRidden();
      *
@@ -256,13 +306,41 @@ public class Player extends Sprite{
 
     /**Method signature:public void restart(float x, float y);
      *
-     * @param x => The given restart x position
-     * @param y => The given restart y position
      *
      * Description: This method would reset the player's position to the given restart position.
      * */
-    public void restart(float x, float y){
-        super.getPosition().setX(x);
-        super.getPosition().setY(y);
+    public void restart(){
+        super.getPosition().setX(PLAYER_INITIAL_X);
+        super.getPosition().setY(PLAYER_INITIAL_Y);
+    }
+
+
+    /**Method signature: private void addLives(int numOfLivesToAdd)
+     *
+     * @param numOfLivesToAdd The number of lives to added to player
+     *
+     * @return nothing
+     *
+     * Description: This method is used to add given lives to player
+     * */
+    private void addLives(int numOfLivesToAdd){
+        for (int i = 0; i<numOfLivesToAdd; i++) {
+            lives.add(new Life(LIVES_REFERENCE,
+                    Life.INITIAL_X_POSITION +lives.size() * Life.THE_GAP,
+                    Life.INITIAL_Y_POSITION));
+        }
+    }
+
+    /**
+     * Method signature: public void resetPlayerBooleanBeforeUpdate()
+     *
+     * Description: This method set the isRidden, isKilled, isContactWithSprite and isInHole to false. Because for each
+     *              update in the world, we need to detect these boolean and decide whether to set to ture..
+     * */
+    public void resetPlayerBooleanBeforeUpdate(){
+        this.isRidden = false;
+        this.isKilled = false;
+        this.isContactWithSolidSprite = false;
+        this.isInAHole = false;
     }
 }

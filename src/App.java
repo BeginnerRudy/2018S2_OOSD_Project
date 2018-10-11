@@ -19,6 +19,10 @@ public class App extends BasicGame {
     public static final int SCREEN_WIDTH = 1024;
     /** screen height, in pixels */
     public static final int SCREEN_HEIGHT = 768;
+    /** screen left bound, in pixels */
+    public static final int SCREEN_LEFT_BOUND = 0;
+    /** screen right bound, in pixels */
+    public static final int SCREEN_RIGHT_BOUND = SCREEN_WIDTH;
 
     private World world;
 
@@ -64,7 +68,7 @@ public class App extends BasicGame {
     public static void main(String[] args)
             throws SlickException {
         AppGameContainer app = new AppGameContainer(new App());
-        app.setShowFPS(true);
+        app.setShowFPS(false);
         app.setDisplayMode(SCREEN_WIDTH, SCREEN_HEIGHT, false);
         app.start();
     }
