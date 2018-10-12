@@ -1,46 +1,63 @@
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Class: public class ExtraLife extends Sprite
+ *
+ * Description: This ExtraLife class represent the extra life object in the game.
+ * This class take the responsibility of updating the behaviour and position of the extra life.
+ *
+ * */
 public class ExtraLife extends Sprite{
-    // The speed of Extra life
+    /** The speed of Extra life*/
     private static final float EXTRA_LIFE_SPEED = Tile.TILE_SIZE;
-    // The initial direction of Extra Life
+    /** The initial direction of Extra Life*/
     private static final boolean EXTRA_LIFE_IS_MOVE_TO_RIGHT_INITIAL = true;
-    // After occurring this amount of time, the extra life object should disappear
+    /** After occurring this amount of time, the extra life object should disappear*/
     public static final Timer TIME_OF_EXTRALIFE_DISAPPEAR = new Timer(14*Level.SECOND_TO_MILLISECOND);
-    // After each amount of this time, the extra object should move, if it is appeared.
+    /** After each amount of this time, the extra object should move, if it is appeared.*/
     public static final Timer WAITING_TIME_OF_EXTRALIFE_TO_MOVE = new Timer(2*Level.SECOND_TO_MILLISECOND);
-    // The max millisecond passed that the extra life should appear
+    /** The max millisecond passed that the extra life should appear*/
     public static final long MAX_TIME_OF_EXTRA_LIFE_TO_APPEAR = 35*Level.SECOND_TO_MILLISECOND;
-    // The min millisecond passed that the extra life should appear
+    /** The min millisecond passed that the extra life should appear*/
     public static final long MIN_TIME_OF_EXTRA_LIFE_TO_APPEAR = 25*Level.SECOND_TO_MILLISECOND;
-    // The start of the time to record
+    /** The start of the time to record*/
     private static final long TIME_START_TO_RECORD = 0;
-    // The initial position of extra life, since at the game start the extra life does not appear immediately
-    // Thus, the initial position of the extra life does not mean anything, and I set it to (0, 0).
+    /** The initial position of extra life, since at the game start the extra life does not appear immediately
+    * Thus, the initial position of the extra life does not mean anything, and I set it to (0, 0).*/
     public static final int EXTRA_LIFE_INITIAL_X = 0;
     public static final int EXTRA_LIFE_INITIAL_Y = 0;
 
-    // The initial relative position of x of the extra life relative to the center of the log
+    /** The initial relative position of x of the extra life relative to the center of the log*/
     public static final float INITIAL_RELATIVE_X = 0f;
 
-    // define the image reference of extra life
+    /** define the image reference of extra life*/
     private static final String EXTRALIFE_REFERENCE = "assets/extralife.png";
+    /** The attribute represents speed of the extra life*/
     private float speed;
+    /** The attributes represents whether the player is move to right*/
     private boolean extraLifeIsMoveToRight;
+    /** The attributes represents the log the player is ridden*/
     private RideableVehicle theLog;
+    /** The attributes represents the extra life's relative to the center of the log*/
     private float extraLifePositionRelativeToTheLogCenter;
-    // The boolean value for whether extra life appear
+    /** The boolean value for whether extra life appear*/
     private boolean available;
-    // The time of the extra life object should appear
+    /** The time of the extra life object should appear*/
     private Timer waitingTimeOfExtraLifeToAppear;
-    // The time that the extra life object has waited to appear
+    /** The time that the extra life object has waited to appear*/
     private Timer timeHasWaitedToAppear;
-    // The time that the extra life object has appeared
+    /** The time that the extra life object has appeared*/
     private Timer timeHasOccured;
-    // The time that the extra life has waited to move,
+    /** The time that the extra life has waited to move.*/
     private Timer timeHasWaitedToMove;
 
+    /**
+     * Method signature: public ExtraLife()
+     *
+     * Description: This is the constructor fot the class ExtraLife. It initialize the attributes of it.
+     *
+     * */
     public ExtraLife() {
         // since the extra life is relatively static to its log
         // In y direction, it is always static, thus, set its y to the log's y
