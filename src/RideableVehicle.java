@@ -1,17 +1,36 @@
+/**
+ * Class: public class RideableVehicle extends Vehicle
+ *
+ * Description: This RideableVehicle class represent the rideable vehicle in the game, that are the log, longlog and turtle.
+ *              This class is inheriting the Vehicle class.
+ *              This class take the responsibility of updating the position and the behaviour of the rideable vehicles.
+ *
+ * */
 public class RideableVehicle extends Vehicle{
-    // define the image reference of log
+    /** define the image reference of log*/
     private static final String LOG_REFERENCE = "assets/log.png";
-    // define the image reference of longlog
+    /** define the image reference of longlog*/
     private static final String LONGLOG_REFERENCE = "assets/longlog.png";
-    // define the image reference of turtles
+    /** define the image reference of turtles*/
     private static final String TURTLES_REFERENCE = "assets/turtles.png";
-    // The speed of vehicle log
+    /** The speed of vehicle log*/
     private static final float LOG_SPEED = 0.1f;
-    // The speed of vehicle longlog
+    /** The speed of vehicle longlog*/
     private static final float LONGLOG_SPEED = 0.07f;
-    // The speed of vehicle turtle
+    /** The speed of vehicle turtle*/
     private static final float TURTLE_SPEED = 0.085f;
 
+    /**
+     * Method signature: public RideableVehicle(String imageSrc, float x, float y, float speed, boolean isMoveToRight)
+     *
+     * @param imageSrc The reference path of image
+     * @param x The x position of the rideable vehicle
+     * @param y The y position of the rideable vehicle
+     * @param isMoveToRight The boolean indicates whether the rideable vehicle is move to right.
+     * @param speed The given speed of the rideable vehicle.\
+     *
+     * Description: This is the constructor of the class RideableVehicle.
+     * */
     public RideableVehicle(String imageSrc, float x, float y, float speed, boolean isMoveToRight)  {
         super(imageSrc, x, y, speed, isMoveToRight);
     }
@@ -68,7 +87,7 @@ public class RideableVehicle extends Vehicle{
      * @param x The given x-coordinate
      * @param y The given y-coordinate
      * @param isMoveToRight The given moving direction
-     *
+     * @return The log object.
      * Description: This methods returns a Rideable Vehicle called log.
      * */
     public static RideableVehicle createALog(float x, float y, boolean isMoveToRight){
@@ -80,7 +99,7 @@ public class RideableVehicle extends Vehicle{
      * @param x The given x-coordinate
      * @param y The given y-coordinate
      * @param isMoveToRight The given moving direction
-     *
+     * @return The long log object.
      * Description: This methods returns a Rideable Vehicle called longlog.
      * */
     public static RideableVehicle createALongLog(float x, float y, boolean isMoveToRight){
@@ -92,7 +111,7 @@ public class RideableVehicle extends Vehicle{
      * @param x The given x-coordinate
      * @param y The given y-coordinate
      * @param isMoveToRight The given moving direction
-     *
+     * @return The turtle object.
      * Description: This methods returns a Rideable Vehicle called turtle.
      * */
     public static RideableVehicle createATurtle(float x, float y, boolean isMoveToRight){
