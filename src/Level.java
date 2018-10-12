@@ -121,11 +121,15 @@ public class Level {
 
         // update the position of all sprites which are movable in the world of the current level
         this.level.values().forEach(t->t.forEach(i -> i.update(delta)));
-        this.extraLife.update(time, player, this.level.get(LOGS));
+        this.extraLife.update(delta, player, this.level.get(LOGS));
 
         // update the behaviour of all sprites in the world of the current level
 
-        // First, the rideable vehicles
+        // First, let's look at the the behaviour of the extra life.
+        if (this.extraLife.isAvailable()){
+            this.extraLife.behaviour(player, delta);
+        }
+        // Then, the rideable vehicles
         ArrayList<Sprite> logs = this.level.get(LOGS);
         // if the ArrayList of this Sprite as described by the given key is not null, then iterate over it
         if (logs!=null) {
@@ -383,6 +387,7 @@ public class Level {
             } else if (this.currentLevel == Level.LEVEL_1) {
                 // reinitialize all the Tiles, Vehicles, FinishedPlayers and ExtraLife from current "background"
                 this.level = createTheBackground(Level.LEVEL1_REFERENCE);
+                this.extraLife = new ExtraLife();
             }
                 // do nothing, since we start with level 0.
         }

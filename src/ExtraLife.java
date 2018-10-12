@@ -13,15 +13,20 @@ public class ExtraLife extends Sprite{
     // After occurring this amount of time, the extra life object should disappear
     public static final long TIME_OF_EXTRALIFE_DISAPPEAR = 14*Level.SECOND_TO_MILLISECOND;
     // After each amount of this time, the extra object should move, if it is appeared.
-    public static final long TIME_OF_EXTRALIFE_MOVE = 2*Level.SECOND_TO_MILLISECOND;
+    public static final long WAITING_TIME_OF_EXTRALIFE_TO_MOVE = 2*Level.SECOND_TO_MILLISECOND;
     // The max millisecond passed that the extra life should appear
     public static final long MAX_TIME_OF_EXTRA_LIFE_TO_APPEAR = 35*Level.SECOND_TO_MILLISECOND;
     // The min millisecond passed that the extra life should appear
     public static final long MIN_TIME_OF_EXTRA_LIFE_TO_APPEAR = 25*Level.SECOND_TO_MILLISECOND;
+    // The start of the time to record
+    private static final long TIME_START_TO_RECORD = 0;
     // The initial position of extra life, since at the game start the extra life does not appear immediately
     // Thus, the initial position of the extra life does not mean anything, and I set it to (0, 0).
     public static final int EXTRA_LIFE_INITIAL_X = 0;
     public static final int EXTRA_LIFE_INITIAL_Y = 0;
+
+    // The initial relative position of x of the extra life relative to the center of the log
+    public static final float INITIAL_RELATIVE_X = 0f;
 
     // define the image reference of extra life
     private static final String EXTRALIFE_REFERENCE = "assets/extralife.png";
@@ -34,7 +39,13 @@ public class ExtraLife extends Sprite{
     // The boolean value for whether the extra life has an vehicle to ride
     private boolean isRidden;
     // The time of the extra life object should appear
-    private long timeOfExtraLifeToAppear;
+    private Timer waitingTimeOfExtraLifeToAppear;
+    // The time that the extra life object has waited to appear
+    private Timer timeHasWaitedToAppear;
+    // The time that the extra life object has appeared
+    private Timer timeHasOccured;
+    // The time that the extra life has waited to move,
+    private Timer timeHasWaitedToMove;
 
     public ExtraLife() {
         // since the extra life is relatively static to its log
@@ -46,7 +57,7 @@ public class ExtraLife extends Sprite{
 
         // since at the beginning,  the extra life cannot move, thus it is relatively static to log's center in x direction
         // Therefore, set it to 0.
-        this.extraLifePositionRelativeToTheLogCenter = 0f;
+        this.extraLifePositionRelativeToTheLogCenter = INITIAL_RELATIVE_X;
         this.speed = EXTRA_LIFE_SPEED;
         this.extraLifeIsMoveToRight = EXTRA_LIFE_IS_MOVE_TO_RIGHT_INITIAL;
         // At the beginning, the extra life does not have a log to ride on.
@@ -54,9 +65,11 @@ public class ExtraLife extends Sprite{
         this.available = false;
         this.isRidden = false;
         // Generate a random time between 25 and 35 of the extra life should appear.
-//        this.timeOfExtraLifeToAppear = MIN_TIME_OF_EXTRA_LIFE_TO_APPEAR
-//        + (long) (Math.random() * (MAX_TIME_OF_EXTRA_LIFE_TO_APPEAR - MIN_TIME_OF_EXTRA_LIFE_TO_APPEAR));
-        this.timeOfExtraLifeToAppear = 1000;
+        this.waitingTimeOfExtraLifeToAppear = new Timer(MIN_TIME_OF_EXTRA_LIFE_TO_APPEAR
+        + (long) (Math.random() * (MAX_TIME_OF_EXTRA_LIFE_TO_APPEAR - MIN_TIME_OF_EXTRA_LIFE_TO_APPEAR)));
+        this.timeHasOccured = new Timer(TIME_START_TO_RECORD);
+        this.timeHasWaitedToAppear = new Timer(TIME_START_TO_RECORD);
+        this.timeHasWaitedToMove = new Timer(TIME_START_TO_RECORD);
     }
 
 
@@ -72,18 +85,28 @@ public class ExtraLife extends Sprite{
     public void behaviour(Player player, int delta){
         // If the player meet the extra life, add one live to player and make the extra unavailable
         if (this.contactSprite(player)){
-            this.available = false;
+            this.makeExtraLifeDisappear();
+            // add one extra life to player
+            player.getLives().add(new Life(Life.LIVES_REFERENCE,
+                    Life.INITIAL_X_POSITION +player.getLives().size() * Life.THE_GAP,
+                    Life.INITIAL_Y_POSITION));
         }
     }
 
     /** Method signature: public void updatePlayNextMove(Input input);
      *
-     * @param time => The time of the world.
+     * @param delta The milliseconds since last frame passed.
      *
      * Description: This methods only updates the extraLifePositionRelativeToTheLogCenter.
      * */
-    public void updateExtraLifeRelativeXPosition(Timer time){
-        if (time.isTimeForExtraLifeToMove(this.available, this.timeOfExtraLifeToAppear)){
+    public void updateExtraLifeRelativeXPosition(int delta){
+        // if the extra life has already waiting enough time, the let it take a step
+        if (this.timeHasWaitedToMove.getTime() > WAITING_TIME_OF_EXTRALIFE_TO_MOVE){
+            // reset the waiting time of move of the extra life object
+            this.timeHasWaitedToMove.setTime(TIME_START_TO_RECORD);
+
+            // decide whether the next step of the extra life would fall from the log
+            // if it does, reverse the moving direction.
             if (this.extraLifeIsMoveToRight){//move to right
                 this.getBoundingBox().setX(this.getPosition().getX() + this.speed + this.extraLifePositionRelativeToTheLogCenter);
                 // if it would move off the log, make it move to left
@@ -106,46 +129,54 @@ public class ExtraLife extends Sprite{
             }else{// move to left
                 this.extraLifePositionRelativeToTheLogCenter-=this.speed;
             }
+        }else{// The extra life need to keep waiting to make a move
+            this.timeHasWaitedToMove.setTime(this.timeHasWaitedToMove.getTime() + delta);
         }
-        // else => do nothing
+
     }
     /**
      *
      *
      * */
-    public void update(Timer time, Player player, ArrayList<Sprite> logs){
-        // decide whether the extra life is available
-        this.available = time.isExtraLifeAvailable(timeOfExtraLifeToAppear);
-        // if the extralife is available, make it appear.
-        if (this.available){
-            // if the extra life does not has a object to ride, give it one.
-            if (!this.isRidden){
-                // chose the log to ride on randomly from the logs
+    public void update(int delta, Player player, ArrayList<Sprite> logs){
+        // if the extra life is not available.
+        if (!this.available){
+            // if the extra life has already waiting enough time, then make it available
+            if(this.timeHasWaitedToAppear.getTime() > this.waitingTimeOfExtraLifeToAppear.getTime()){
+                this.available = true;
+                // reset it waited time to appear to TIME_START_TO_RECORD, that is 0 millisecond.
+                this.timeHasWaitedToAppear.setTime(TIME_START_TO_RECORD);
+                // choose a log for the extra life to ride on.
                 Random random = new Random();
                 this.theLog = (RideableVehicle) logs.get(random.nextInt(logs.size() - 1));
-                this.isRidden = true;
+            }else{// if not, keep waiting.
+                this.timeHasWaitedToAppear.setTime(this.timeHasWaitedToAppear.getTime() + delta);
             }
+        }
 
-            // update the position of the extra life
-            // update the position of player due to log, that is the player should move with the log first.
-            if (theLog!=null){
+        // if the extra life is available
+        if (this.available){
+            // decide whether the extra life has already appeared enough time to disappear.
+            // if the time is enough to disappear, then make it not available
+            if (this.timeHasOccured.getTime() > TIME_OF_EXTRALIFE_DISAPPEAR){
+                this.makeExtraLifeDisappear();
+            }else {// if not, keep occurring and record the time.
+                this.timeHasOccured.setTime(this.timeHasOccured.getTime() + delta);
+                // update the position of the extra life
+
+                // First, give it the position or the moving of the log that it ride on.
                 this.getPosition().setX(this.theLog.getPosition().getX());
                 this.getPosition().setY(this.theLog.getPosition().getY());
                 this.getBoundingBox().setX(this.getPosition().getX());
                 this.getBoundingBox().setY(this.getPosition().getY());
-            }
-            // update its x position according to the log's center.
-            this.updateExtraLifeRelativeXPosition(time);
-            // update the position of extra life with respect to it relative location to the center of the log
-            this.getPosition().setX(this.getPosition().getX() + this.extraLifePositionRelativeToTheLogCenter);
-            this.getBoundingBox().setX(this.getPosition().getX());
 
-        }else{
-            // Since the extra life is not available, thus it does not ride on any thing.
-            this.isRidden = false;
-            this.extraLifeIsMoveToRight = EXTRA_LIFE_IS_MOVE_TO_RIGHT_INITIAL;
-            this.extraLifePositionRelativeToTheLogCenter = 0f;
-            this.theLog = null;
+                // Then, update the move of the extra life
+                this.updateExtraLifeRelativeXPosition(delta);
+
+                // Finally, update the move of extra life to its position
+                this.getPosition().setX(this.getPosition().getX() + this.extraLifePositionRelativeToTheLogCenter);
+                this.getBoundingBox().setX(this.getPosition().getX());
+            }
         }
     }
 
@@ -160,15 +191,22 @@ public class ExtraLife extends Sprite{
         return available;
     }
 
+
     /**
-     * Method signature:  public void setTimeOfExtraLifeToAppear(long timeOfExtraLifeToAppear)
+     * Method signature: public void makeExtraLifeDisappear()
      *
-     * Description: The setter for timeOfExtraLifeToAppear
-     *
-     * @param timeOfExtraLifeToAppear The given value of timeOfExtraLifeToAppear.
+     * Description: This method set the condition when the extra life becoming not available.
      *
      * */
-    public void setTimeOfExtraLifeToAppear(long timeOfExtraLifeToAppear) {
-        this.timeOfExtraLifeToAppear = timeOfExtraLifeToAppear;
+    public void makeExtraLifeDisappear(){
+        this.available = false;
+        this.extraLifeIsMoveToRight = EXTRA_LIFE_IS_MOVE_TO_RIGHT_INITIAL;
+        this.theLog = null;
+        this.extraLifePositionRelativeToTheLogCenter = INITIAL_RELATIVE_X;
+        this.timeHasOccured.setTime(TIME_START_TO_RECORD);
+        this.timeHasWaitedToMove.setTime(TIME_START_TO_RECORD);
+        // reset the random time of waiting to appear for the extra life.
+        this.waitingTimeOfExtraLifeToAppear.setTime(MIN_TIME_OF_EXTRA_LIFE_TO_APPEAR
+                + (long) (Math.random() * (MAX_TIME_OF_EXTRA_LIFE_TO_APPEAR - MIN_TIME_OF_EXTRA_LIFE_TO_APPEAR)));
     }
 }

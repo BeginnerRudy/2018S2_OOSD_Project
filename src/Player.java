@@ -6,8 +6,6 @@ import utilities.BoundingBox;
 import java.util.ArrayList;
 
 public class Player extends Sprite{
-    // define the image reference of lives
-    public static final String LIVES_REFERENCE = "assets/lives.png";
     // define the image reference of player
     public static final String PLAYER_REFERENCE = "assets/frog.png";
     // PLAYER_INITIAL_X is the initial x coordinator of player
@@ -321,7 +319,7 @@ public class Player extends Sprite{
      * */
     private void addLives(int numOfLivesToAdd){
         for (int i = 0; i<numOfLivesToAdd; i++) {
-            lives.add(new Life(LIVES_REFERENCE,
+            lives.add(new Life(Life.LIVES_REFERENCE,
                     Life.INITIAL_X_POSITION +lives.size() * Life.THE_GAP,
                     Life.INITIAL_Y_POSITION));
         }

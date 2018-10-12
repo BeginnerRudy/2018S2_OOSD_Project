@@ -15,6 +15,18 @@ public class Timer {
     }
 
     /**
+     * Method signature: public Timer(long time);
+     *
+     * Description: This is the constructor for the Time class.
+     *
+     * @param time The given time to initialize.
+     * */
+    public Timer(long time) {
+        // The time starts from 0.
+        this.time = time;
+    }
+
+    /**
      * Method signature: public long getTime()
      *
      * Description: The getter for time attribute.
@@ -73,24 +85,4 @@ public class Timer {
         return false;
     }
 
-    /**
-     *
-     *
-     * */
-    public boolean isTimeForExtraLifeToMove(boolean isAvailable, long timeOfExtraLifeToAppear){
-        long timeCircleForExtraLife = timeOfExtraLifeToAppear + ExtraLife.TIME_OF_EXTRALIFE_DISAPPEAR;
-        long timeOfExtraLifeHasAppeared = this.time % timeCircleForExtraLife - timeOfExtraLifeToAppear;
-        // if the extra life is available, then decide whether it is time to move or not.
-        if (isAvailable &&
-                (       // If the extra life has occur more than the waiting time to move
-                        (timeOfExtraLifeHasAppeared  > ExtraLife.TIME_OF_EXTRALIFE_MOVE)
-                &&      // and if the extra life has waited enough time to move, them return true
-                                (timeOfExtraLifeHasAppeared % ExtraLife.TIME_OF_EXTRALIFE_MOVE)  < EPS
-                )
-        ){
-            return true;
-        }
-        // else return false;
-        return false;
-    }
 }
