@@ -1,9 +1,26 @@
-import org.newdawn.slick.SlickException;
-
+/**
+ * Class: public abstract class Vehicle extends Sprite
+ *
+ * Description: This Vehicle represent the vehicle in the game.
+ *              This class is inheriting from the class Sprite.
+ * */
 public abstract class Vehicle extends Sprite{
+    /**The attribute represents the speed of the vehicle*/
     private float speed;
+    /** The attribute represents whether the vehicle is moving to right.*/
     private boolean isMoveToRight;
 
+    /**
+     * Method signature: public Vehicle(String imageSrc, float x, float y, float speed, boolean isMoveToRight)
+     *
+     * @param imageSrc The reference path of image
+     * @param x The x position of the vehicle
+     * @param y The y position of the vehicle
+     * @param isMoveToRight The boolean indicates whether the vehicle is move to right.
+     * @param speed The given speed of the vehicle.\
+     *
+     * Description: This is the constructor of the class KillableVehicle.
+     * */
     public Vehicle(String imageSrc, float x, float y, float speed, boolean isMoveToRight){
         super(imageSrc, x, y);
         this.speed = speed;
@@ -64,7 +81,7 @@ public abstract class Vehicle extends Sprite{
 
     /** Method signature: public float getSpeed();
      *
-     * none
+     * @return The spped of the vehicle.
      *
      * Description: The getter for the attribute speed
      * */
@@ -74,7 +91,7 @@ public abstract class Vehicle extends Sprite{
 
     /** Method signature: public boolean isMoveToRight();
      *
-     * none
+     * @return The boolean value indicates whether the vehicle is moving to right.
      *
      * Description: The getter for the attribute isMoveToRight
      * */
