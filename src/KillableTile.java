@@ -1,6 +1,21 @@
-public class KillableTile extends Tile implements Killable{ // define the image reference of water
+/**
+ * Class: public class KillableTile extends Tile implements Killable
+ *
+ * Description: This class represents the Killable tile in the game, that is the water tile.
+ *              This class takes the responsibility of updating the behaviour of the Killable Tile.
+ * */
+public class KillableTile extends Tile implements Killable{
+    /** define the image reference of water*/
     private static final String WATER_REFERENCE = "assets/water.png";
 
+    /**Method signature: public KillableTile(String imgSrc, float x, float y)
+     *
+     * @param imgSrc The image reference.
+     * @param x The given x-coordinate
+     * @param y The given y-coordinate
+     *
+     * Description: This methods returns a Killable Vehicle called bike.
+     * */
     public KillableTile(String imgSrc, float x, float y) {
         super(imgSrc, x, y);
     }
@@ -9,7 +24,7 @@ public class KillableTile extends Tile implements Killable{ // define the image 
      *
      * @param x The given x-coordinate
      * @param y The given y-coordinate
-     *
+     * @return A water object
      * Description: This methods returns a Killable Tile called water.
      * */
     public static KillableTile createAWater(float x, float y){
