@@ -1,7 +1,7 @@
 /**
  * Class: public class SoliableTile extends Tile implements Solidable
  *
- * Description: This class represents the Solidable tile in the game, that is the water tile.
+ * Description: This class represents the Solidable tile in the game, that is the tree tile.
  *              This class takes the responsibility of updating the behaviour of the Solidable Tile.
  * */
 public class SoliableTile extends Tile implements Solidable{

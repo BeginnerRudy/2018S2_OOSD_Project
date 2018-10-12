@@ -1,11 +1,30 @@
-import org.newdawn.slick.SlickException;
-
+/**
+ * Class: public class SolidableVehicle extends Vehicle implements Solidable
+ *
+ * Description: This SolidableVehicle class represent the Solidable vehicle in the game, that are the bulldozer.
+ *              This class is inheriting the Vehicle class and implement the Solidable interface.
+ *              This class take the responsibility of updating the position and the behaviour of the Solidable vehicles.
+ *
+ * */
 public class SolidableVehicle extends Vehicle implements Solidable {
-    // define the image reference of bulldozer
+    /** define the image reference of bulldozer*/
     private static final String BULLDOZER_REFERENCE = "assets/bulldozer.png";
-    // The speed of vehicle bulldozer
+    /** The speed of vehicle bulldozer*/
     private static final float BULLDOZER_SPEED = 0.05f;
+    /** The attribute indicates whether this solidable vehicle contacts with the player*/
     private boolean isContactWithPlayer;
+
+    /**
+     * Method signature: public SolidableVehicle(String imageSrc, float x, float y, float speed, boolean isMoveToRight)
+     *
+     * @param imageSrc The reference path of image
+     * @param x The x position of the solidable vehicle
+     * @param y The y position of the solidable vehicle
+     * @param isMoveToRight The boolean indicates whether the solidable vehicle is move to right.
+     * @param speed The given speed of the solidable vehicle.\
+     *
+     * Description: This is the constructor of the class SolidableVehicle.
+     * */
     public SolidableVehicle(String imageSrc, float x, float y, float speed, boolean isMoveToRight) {
         super(imageSrc, x, y, speed, isMoveToRight);
         isContactWithPlayer = false;
@@ -16,7 +35,7 @@ public class SolidableVehicle extends Vehicle implements Solidable {
      * @param x The given x-coordinate
      * @param y The given y-coordinate
      * @param isMoveToRight The given moving direction
-     *
+     * @return A bulldozer object.
      * Description: This methods returns a Solidable Vehicle called bulldozer.
      * */
     public static SolidableVehicle createABulldozer(float x, float y, boolean isMoveToRight){
@@ -75,15 +94,6 @@ public class SolidableVehicle extends Vehicle implements Solidable {
         // handled by setting the player.isContactWithSolidSprite to false each time update in the update of Class world
     }
 
-    /** Method signature: public boolean isContactWithPlayer();
-     *
-     * no argument
-     *
-     * Description: The getter of isContactWithPlayer
-     * */
-    public boolean isContactWithPlayer() {
-        return isContactWithPlayer;
-    }
 
     /** Method signature: public void setContactWithPlayer(boolean contactWithPlayer);
      *
