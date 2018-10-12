@@ -1,4 +1,10 @@
-
+/**
+ * Class: public class FinishedPlayer extends Sprite implements Solidable
+ *
+ * Description:  This FinishedPlayer class represent the player that moved into a hole. This class inheriting from the
+ *              Sprite class. This class take the responsibility of representing the FinishedPlayer.
+ *
+ * */
 public class FinishedPlayer extends Sprite implements Solidable{
     public FinishedPlayer(float x, float y){
         super(Player.PLAYER_REFERENCE, x, y);

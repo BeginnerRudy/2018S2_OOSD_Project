@@ -4,7 +4,7 @@ import java.util.Random;
 /**
  * Class: public class ExtraLife extends Sprite
  *
- * Description: This ExtraLife class represent the extra life object in the game.
+ * Description: This ExtraLife class represent the extra life object in the game. This class inheriting from the Sprite class.
  * This class take the responsibility of updating the behaviour and position of the extra life.
  *
  * */
