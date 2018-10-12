@@ -1,12 +1,30 @@
+/**
+ * Class: public class KillableAndReversableVehicle extends KillableVehicle
+ *
+ * Description: This KillableAndReversableVehicle represent mainly the bike vehicle in the game.
+ *              This class is inheriting from the KillableVehicle class.
+ *              This class takes the responsibility of updating the position and behaviour of the bike.
+ * */
 public class KillableAndReversableVehicle extends KillableVehicle{
-    // The speed of vehicle bike
+    /** The speed of vehicle bike*/
     public static final float BIKE_SPEED = 0.2f;
-    // define the image reference of bike
+    /** define the image reference of bike*/
     private static final String BIKE_REFERENCE = "assets/bike.png";
-    // The x-coordinate for bike to reverse direction
+    /** The x-coordinate for bike to reverse direction*/
     public static final float BIKE_REVERSE_24 = 24f;
     public static final float BIKE_REVERSE_1000 = 1000f;
 
+    /**
+     * Method signature: public KillableAndReversableVehicle(String imageSrc, float x, float y, float speed, boolean isMoveToRight)
+     *
+     * @param imageSrc The reference path of image
+     * @param x The x position of the killable and reversable vehicle
+     * @param y The y position of the killable and reversable vehicle
+     * @param isMoveToRight The boolean indicates whether the killable and reversable vehicle is move to right.
+     * @param speed The given speed of the killable and reversable vehicle.\
+     *
+     * Description: This is the constructor of the class KillableAndReversableVehicle.
+     * */
     public KillableAndReversableVehicle(String imageSrc, float x, float y, float speed, boolean isMoveToRight) {
         super(imageSrc, x, y, speed, isMoveToRight);
     }
@@ -19,7 +37,7 @@ public class KillableAndReversableVehicle extends KillableVehicle{
      * @param x The given x-coordinate
      * @param y The given y-coordinate
      * @param isMoveToRight The given moving direction
-     *
+     * @return A bike object.
      * Description: This methods returns a Killable Vehicle called bike.
      * */
     public static KillableAndReversableVehicle createABike(float x, float y, boolean isMoveToRight){
