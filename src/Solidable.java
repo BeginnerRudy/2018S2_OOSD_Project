@@ -1,3 +1,9 @@
+/**
+ * Interface: public interface Solidable
+ *
+ * Description: This interface represent the action of player cannot move into solid object.
+ *
+ * */
 public interface Solidable {
     /**Method signature: default void solidPlayer(Player player, Sprite solidSprite){
      *
