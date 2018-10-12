@@ -2,11 +2,29 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import utilities.BoundingBox;
 
+/**
+ * Class: public abstract class Sprite
+ *
+ * Description: The Sprite class represents all the game objects in the world.
+ *
+ * */
 public abstract class Sprite {
+    /** The attribute for the image of the sprite*/
     private Image image;
+    /** The attribute for the position of the sprite*/
     private Position position;
+    /** The attribute for the BoundingBox of the sprite*/
     private BoundingBox bb;
 
+    /**
+     * Method signature: public Sprite(String imageSrc, float x, float y)
+     *
+     * @param imageSrc The reference path of image
+     * @param x The x position of the sprite
+     * @param y The y position of the sprite
+     *
+     * Description: This is the constructor of the sprite.
+     * */
     public Sprite(String imageSrc, float x, float y){
         // Why would the constructor need a path to an image, and a coordinate?
         setupSprite(imageSrc, x, y);
@@ -46,7 +64,11 @@ public abstract class Sprite {
         this.bb = new BoundingBox(image, (int)x, (int)y);
     }
 
-    // I am going to override render in concrete class, respectively
+    /**
+     * Method signature: public void render()
+     *
+     * Description: This is a method for drawing the sprite.
+     * */
     public void render(){
         this.image.drawCentered(this.position.getX(), this.position.getY());
     }
@@ -77,8 +99,8 @@ public abstract class Sprite {
     /**
      * Method signature: public boolean contactSprite(Sprite other);
      *
-     * @param other => another Sprite objects to test contacting
-     *
+     * @param other  another Sprite objects to test contacting
+     * @return The boolean value indicates whether two sprites contacts
      * This method returns boolean value.
      * If the two Sprite's bounding box contacted then return true.
      * Otherwise, return false.
@@ -92,19 +114,34 @@ public abstract class Sprite {
     }
 
     /**
-     * function: return the BoundingBox
+     * Method signature: public BoundingBox getBoundingBox()
+     *
+     * @return The BoundingBox of the sprite.
+     *
+     * Description: The getter for the BoundingBox
      */
     public BoundingBox getBoundingBox() {
         return this.bb;
     }
 
     /**
-     * function: return the image
+     * Method signature: public Image getImage()
+     *
+     * @return The image of the sprite.
+     *
+     * Description: The getter for the image
      */
     public Image getImage() {
         return this.image;
     }
 
+    /**
+     * Method signature: public Position getPosition()
+     *
+     * @return The position of the sprite.
+     *
+     * Description: The getter for the position
+     */
     public Position getPosition() {
         return position;
     }
