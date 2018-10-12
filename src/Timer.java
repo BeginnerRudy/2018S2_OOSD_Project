@@ -1,7 +1,13 @@
+/**
+ * Class: public class Timer
+ *
+ * Description: This Timer class represent the time in the game.
+ *
+ * */
 public class Timer {
-    // The acceptable error for comparing equality.
+    /** The acceptable error for comparing equality.*/
     public static final long EPS = 15;
-    // The long int for storing time.
+    /** The long int for storing time.*/
     private long time;
     /**
      * Method signature: public Timer();
