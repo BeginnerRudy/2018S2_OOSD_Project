@@ -1,6 +1,3 @@
-import org.lwjgl.Sys;
-
-import javax.swing.text.LabelView;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -9,11 +6,10 @@ public class ExtraLife extends Sprite{
     private static final float EXTRA_LIFE_SPEED = Tile.TILE_SIZE;
     // The initial direction of Extra Life
     private static final boolean EXTRA_LIFE_IS_MOVE_TO_RIGHT_INITIAL = true;
-
     // After occurring this amount of time, the extra life object should disappear
-    public static final long TIME_OF_EXTRALIFE_DISAPPEAR = 14*Level.SECOND_TO_MILLISECOND;
+    public static final Timer TIME_OF_EXTRALIFE_DISAPPEAR = new Timer(14*Level.SECOND_TO_MILLISECOND);
     // After each amount of this time, the extra object should move, if it is appeared.
-    public static final long WAITING_TIME_OF_EXTRALIFE_TO_MOVE = 2*Level.SECOND_TO_MILLISECOND;
+    public static final Timer WAITING_TIME_OF_EXTRALIFE_TO_MOVE = new Timer(2*Level.SECOND_TO_MILLISECOND);
     // The max millisecond passed that the extra life should appear
     public static final long MAX_TIME_OF_EXTRA_LIFE_TO_APPEAR = 35*Level.SECOND_TO_MILLISECOND;
     // The min millisecond passed that the extra life should appear
@@ -36,8 +32,6 @@ public class ExtraLife extends Sprite{
     private float extraLifePositionRelativeToTheLogCenter;
     // The boolean value for whether extra life appear
     private boolean available;
-    // The boolean value for whether the extra life has an vehicle to ride
-    private boolean isRidden;
     // The time of the extra life object should appear
     private Timer waitingTimeOfExtraLifeToAppear;
     // The time that the extra life object has waited to appear
@@ -63,7 +57,6 @@ public class ExtraLife extends Sprite{
         // At the beginning, the extra life does not have a log to ride on.
         this.theLog = null;
         this.available = false;
-        this.isRidden = false;
         // Generate a random time between 25 and 35 of the extra life should appear.
         this.waitingTimeOfExtraLifeToAppear = new Timer(MIN_TIME_OF_EXTRA_LIFE_TO_APPEAR
         + (long) (Math.random() * (MAX_TIME_OF_EXTRA_LIFE_TO_APPEAR - MIN_TIME_OF_EXTRA_LIFE_TO_APPEAR)));
@@ -72,10 +65,11 @@ public class ExtraLife extends Sprite{
         this.timeHasWaitedToMove = new Timer(TIME_START_TO_RECORD);
     }
 
-
     /**
      * Method signature: public void behaviour(Player player);
-     * Description: This is an empty method, since ... do noting
+     * Description: This method controls the behaviour when the player contact with the extra life object.
+     * After the player contact with the extra life object, it will make the extra life object disappear,
+     * and give the player one more extra life.
      *
      * @param player The Player object to make behaviour on
      * @param delta The milliseconds since last frame is passed. It does not make se here,
@@ -101,7 +95,7 @@ public class ExtraLife extends Sprite{
      * */
     public void updateExtraLifeRelativeXPosition(int delta){
         // if the extra life has already waiting enough time, the let it take a step
-        if (this.timeHasWaitedToMove.getTime() > WAITING_TIME_OF_EXTRALIFE_TO_MOVE){
+        if (this.timeHasWaitedToMove.isLargerThan(WAITING_TIME_OF_EXTRALIFE_TO_MOVE)){
             // reset the waiting time of move of the extra life object
             this.timeHasWaitedToMove.setTime(TIME_START_TO_RECORD);
 
@@ -134,15 +128,21 @@ public class ExtraLife extends Sprite{
         }
 
     }
+
     /**
+     * Method signature: public void update(int delta, Player player, ArrayList<Sprite> logs)
      *
+     * Description: This method updates the position of extra life with according to whether the time is it.
+     * If the extra life has already waited time more than the time needed to waited to appear, then make it available.
+     * After the extra life object appears, start recording its appeared time. If the extra life has appeared more than
+     * the time needed to disappear, that is become unavailable, then make the extra life unavailable.
      *
      * */
     public void update(int delta, Player player, ArrayList<Sprite> logs){
         // if the extra life is not available.
         if (!this.available){
             // if the extra life has already waiting enough time, then make it available
-            if(this.timeHasWaitedToAppear.getTime() > this.waitingTimeOfExtraLifeToAppear.getTime()){
+            if(this.timeHasWaitedToAppear.isLargerThan(this.waitingTimeOfExtraLifeToAppear)){
                 this.available = true;
                 // reset it waited time to appear to TIME_START_TO_RECORD, that is 0 millisecond.
                 this.timeHasWaitedToAppear.setTime(TIME_START_TO_RECORD);
@@ -158,7 +158,7 @@ public class ExtraLife extends Sprite{
         if (this.available){
             // decide whether the extra life has already appeared enough time to disappear.
             // if the time is enough to disappear, then make it not available
-            if (this.timeHasOccured.getTime() > TIME_OF_EXTRALIFE_DISAPPEAR){
+            if (this.timeHasOccured.isLargerThan(TIME_OF_EXTRALIFE_DISAPPEAR)){
                 this.makeExtraLifeDisappear();
             }else {// if not, keep occurring and record the time.
                 this.timeHasOccured.setTime(this.timeHasOccured.getTime() + delta);
@@ -190,7 +190,6 @@ public class ExtraLife extends Sprite{
     public boolean isAvailable() {
         return available;
     }
-
 
     /**
      * Method signature: public void makeExtraLifeDisappear()

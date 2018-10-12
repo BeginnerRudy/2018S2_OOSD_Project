@@ -65,24 +65,15 @@ public class Timer {
         return false;
     }
 
-
     /**
-     * Method signature: public boolean isExtraLifeAvailable(long timeOfExtraLifeToAppear)
+     * Method signature: public boolean isLargerThan(Timer other)
      *
-     * Description: This method returns the boolean value for whether the turtles are above or under water.
+     * Description: This method returns true if this time is larger than the other time.
      *
-     * @param timeOfExtraLifeToAppear The waiting time of the extra life should appear
+     * @param other Another timer object for comparing.
      *
-     * @return The boolean value to indicate whether the turtles are above or under water.
      * */
-    public boolean isExtraLifeAvailable(long timeOfExtraLifeToAppear){
-        // By taking module of time with respect to the time of a circle of the extra life is available and unavailable.
-        // If the extra life should appear, the result would  larger than its waiting time to appear.
-        long timeCircleForExtraLife = timeOfExtraLifeToAppear + ExtraLife.TIME_OF_EXTRALIFE_DISAPPEAR;
-        if ((this.time % timeCircleForExtraLife) > timeOfExtraLifeToAppear){
-            return true;
-        }
-        return false;
+    public boolean isLargerThan(Timer other){
+        return this.time > other.getTime();
     }
-
 }

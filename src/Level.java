@@ -10,14 +10,12 @@ public class Level {
     public static final String LEVEL1_REFERENCE = "assets/levels/1.lvl";
     // the number of runs that the player need to finish to go to next level
     public static final int NUM_OF_RUNS_TO_NEXT_LEVEL = 5;
-
     // The symbol to indicate level 0
     public static final int LEVEL_0 = 0;
     // The symbol to indicate level 1
     public static final int LEVEL_1 = 1;
     // The symbol to indicate level 2
     public static final int LEVEL_2 = 2;
-
     // the number of values of an Tile objects in lvl file
     public static final int NUM_OF_VALUES_OF_TILE = 3;
     // the number of values of an Vehicle objects in lvl file
@@ -30,7 +28,6 @@ public class Level {
     public static final int INDEX_OF_Y = 2;
     // the INDEX of Vehicle moving direction in lvl File
     public static final int INDEX_OF_DIRECTION = 3;
-
     // the csv identifier for water
     public static final String WATER = "water";
     // the csv identifier for water
@@ -55,16 +52,13 @@ public class Level {
     public static final String TURTLE = "turtle";
     // the csv identifier for LONGLOG and LOG
     public static final String LOGS = "logs";
-
     // The key of sprites need to be updated the behaviour in order
     public static final String[] KEYS_OF_SPRITES_BEHAVIOUR_NEED_TO_BE_UPDATED = new String[]{ TREE,
             FINISHED_PLAYER, BULLDOZER, BUS, RACECAR, BIKE, WATER};
-
     // Layer order means the things has smaller index will be drawn first.
     String[] KEYS_IN_LAYER_ORDER = new String[]{GRASS, WATER, TREE,
             BUS, BULLDOZER, RACECAR, BIKE,
             LOGS, FINISHED_PLAYER};
-
     // The convert between second to millisecond
     public static final long SECOND_TO_MILLISECOND = 1000;
     // The period that the turtle should be in the water
@@ -74,6 +68,7 @@ public class Level {
     // The time for one above and under water cycle for turtles
     public static final long TIME_OF_CIRCLE_OF_TURTLES = TIME_OF_TURTLE_SHOULD_DISAPPEAR + TIME_OF_TURTLE_SHOULD_APPEAR;
 
+    /*********************************************The private instance attributes**************************************/
     // The HashMap for storing objects in level
     private HashMap<String, ArrayList<Sprite>> level;
     // declare the current level of the world
@@ -238,6 +233,7 @@ public class Level {
             extraLife.render();
         }
     }
+
     /**Name: private void createTheBackground(String LEVEL_REFERENCE);
      *
      * @param LEVEL_REFERENCE => The reference of the level CSV file.

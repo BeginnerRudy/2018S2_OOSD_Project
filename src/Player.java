@@ -41,11 +41,14 @@ public class Player extends Sprite{
             e.printStackTrace();
         }
 
-
         lives = new ArrayList<>();
-        this.addLives(INITIAL_NUMBER_OF_LIVES);
+        // Give the player the initial number of lives, that is 3 lives at beginning.
+        for (int i = 0; i<INITIAL_NUMBER_OF_LIVES; i++) {
+            lives.add(new Life(Life.LIVES_REFERENCE,
+                    Life.INITIAL_X_POSITION +lives.size() * Life.THE_GAP,
+                    Life.INITIAL_Y_POSITION));
+        }
     }
-
 
     /**
      * Method signature: public void behaviour(Player player);
@@ -86,8 +89,6 @@ public class Player extends Sprite{
         this.nextStepBB.setX(nextStep.getX());
         this.nextStepBB.setY(nextStep.getY());
     }
-
-
 
     /** Method Signature: public void update (Input input);
      *
@@ -306,23 +307,6 @@ public class Player extends Sprite{
     public void restart(){
         super.getPosition().setX(PLAYER_INITIAL_X);
         super.getPosition().setY(PLAYER_INITIAL_Y);
-    }
-
-
-    /**Method signature: private void addLives(int numOfLivesToAdd)
-     *
-     * @param numOfLivesToAdd The number of lives to added to player
-     *
-     * @return nothing
-     *
-     * Description: This method is used to add given lives to player
-     * */
-    private void addLives(int numOfLivesToAdd){
-        for (int i = 0; i<numOfLivesToAdd; i++) {
-            lives.add(new Life(Life.LIVES_REFERENCE,
-                    Life.INITIAL_X_POSITION +lives.size() * Life.THE_GAP,
-                    Life.INITIAL_Y_POSITION));
-        }
     }
 
     /**

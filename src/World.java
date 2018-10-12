@@ -1,17 +1,28 @@
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import java.util.ArrayList;
-import java.util.Random;
-
+/**
+ * Class: public class World;
+ *
+ * @author Renjie (Rudy) Meng
+ *
+ * Description: This World class represent the world that contains all the objects in game.
+ *              This class also take the responsibility of update itself and draw itself.s
+ * */
 
 public class World {
-    /*********************************Define Sprites and Background********************************/
-    // declare the player
+    /* ********************************Define attributes********************************/
+    /** declare the player attribute of the world*/
     private Player player;
-    // declare the level of the world
+    /** declare the level attribute of the world*/
     private Level level;
 
+    /* ********************************Define method********************************/
 
+    /**
+     * Method signature: public World()
+     *
+     * Description: The constructor for the class World.
+     * */
 	public World(){
         //initialize the attribute of world
         // initialize the level of the world
@@ -19,7 +30,16 @@ public class World {
         //initialize the player
         this.player = new Player();
 	}
-	
+
+	/**
+     * Method signature: public void update(Input input, int delta)
+     *
+     * @param input The input from the user, mainly use the input of the directional keys.
+     * @param delta The milliseconds since last frame passed.
+     *
+     * Description: This method update the level and player of the world according to the input and delta.
+     *              More detail happens in the class of level and player.
+     * */
 	public void update(Input input, int delta){
         // Check whether the game is over. If it is over, then exit the game
         if (player.isGameOver()) System.exit(0);
@@ -34,7 +54,14 @@ public class World {
         // Update the player, include its position, lives and whether killed
         player.update();
 	}
-	
+
+	/**
+     * Method signature: public void render(Graphics g)
+     *
+     * @param g The Graphics g to control the graphic representation of the world
+     *
+     * Description: This method takes the responsibility of drawing all the objects that should by shown at the screen.
+     * */
 	public void render(Graphics g) {
 	    // draw the level
         level.render();
