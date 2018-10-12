@@ -1,15 +1,33 @@
-import org.newdawn.slick.SlickException;
-
+/**
+ * Class: public class KillableVehicle extends Vehicle implements Killable
+ *
+ * Description: This KllableVehicle class represent the killable vehicle in the game, that are the bus, racecar.
+ *              This class is inheriting the Vehicle class and implement the Killable interface.
+ *              This class take the responsibility of updating the position and the behaviour of the killable vehicles.
+ *
+ * */
 public class KillableVehicle extends Vehicle implements Killable {
-    // define the image reference of bus
+    /** define the image reference of bus*/
     private static final String BUS_REFERENCE = "assets/bus.png";
-    // define the image reference of racecar
+    /** define the image reference of racecar*/
     private static final String RACECAR_REFERENCE = "assets/racecar.png";
-    // The speed of vehicle bus
+    /** The speed of vehicle bus*/
     public static final float BUS_SPEED = 0.15f;
-    // The speed of vehicle racecar
+    /** The speed of vehicle racecar*/
     public static final float RACECAR_SPEED = 0.5f;
 
+
+    /**
+     * Method signature: public KillableVehicle(String imageSrc, float x, float y, float speed, boolean isMoveToRight)
+     *
+     * @param imageSrc The reference path of image
+     * @param x The x position of the killable vehicle
+     * @param y The y position of the killable vehicle
+     * @param isMoveToRight The boolean indicates whether the killable vehicle is move to right.
+     * @param speed The given speed of the killable vehicle.\
+     *
+     * Description: This is the constructor of the class KillableVehicle.
+     * */
     public KillableVehicle(String imageSrc, float x, float y, float speed, boolean isMoveToRight) {
         super(imageSrc, x, y, speed, isMoveToRight);
     }
@@ -19,6 +37,7 @@ public class KillableVehicle extends Vehicle implements Killable {
      * @param x The given x-coordinate
      * @param y The given y-coordinate
      * @param isMoveToRight The given moving direction
+     * @return A bus object
      *
      * Description: This methods returns a Killable Vehicle called bus.
      * */
@@ -31,6 +50,7 @@ public class KillableVehicle extends Vehicle implements Killable {
      * @param x The given x-coordinate
      * @param y The given y-coordinate
      * @param isMoveToRight The given moving direction
+     * @return A racecar object.
      *
      * Description: This methods returns a Killable Vehicle called racecar.
      * */
