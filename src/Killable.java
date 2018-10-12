@@ -1,3 +1,9 @@
+/**
+ * Interface: public interface Killable
+ *
+ * Description: This interface represent the action of killing the player.
+ *
+ * */
 public interface Killable {
     /**Method signature: default void killPlayer(Player player, Sprite killableSprite){
      *
