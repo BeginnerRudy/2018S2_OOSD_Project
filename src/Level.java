@@ -3,87 +3,111 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Class: public class Level
+ *
+ * @author Renjie (Rudy) Meng
+ *
+ * Description: This Level class represent a level that is the game objects that inside the world.
+ *              This class that the responsibility to update the game objects in the correct order,
+ *              and make the behaviour correctlt.
+ * */
 public class Level {
-    // the reference for level0 source file
+    /* ********************************************The public constants**************************************/
+    /** the reference for level0 source file*/
     public static final String LEVEL0_REFERENCE = "assets/levels/0.lvl";
-    // the reference for level1 source file
+    /** the reference for level1 source file*/
     public static final String LEVEL1_REFERENCE = "assets/levels/1.lvl";
-    // the number of runs that the player need to finish to go to next level
+    /** the number of runs that the player need to finish to go to next level*/
     public static final int NUM_OF_RUNS_TO_NEXT_LEVEL = 5;
-    // The symbol to indicate level 0
+    /** The symbol to indicate level 0*/
     public static final int LEVEL_0 = 0;
-    // The symbol to indicate level 1
+    /** The symbol to indicate level 1*/
     public static final int LEVEL_1 = 1;
-    // The symbol to indicate level 2
+    /** The symbol to indicate level 2*/
     public static final int LEVEL_2 = 2;
-    // the number of values of an Tile objects in lvl file
+    /** the number of values of an Tile objects in lvl file*/
     public static final int NUM_OF_VALUES_OF_TILE = 3;
-    // the number of values of an Vehicle objects in lvl file
+    /** the number of values of an Vehicle objects in lvl file*/
     public static final int NUM_OF_VALUES_OF_VEHICLE = 4;
-    // the INDEX of Object class in lvl File
+    /** the INDEX of Object class in lvl File*/
     public static final int INDEX_OF_OBJ_CLASS_IN_CSV = 0;
-    // the INDEX of x position in lvl File
+    /** the INDEX of x position in lvl File*/
     public static final int INDEX_OF_X = 1;
-    // the INDEX of y position in lvl File
+    /** the INDEX of y position in lvl File*/
     public static final int INDEX_OF_Y = 2;
-    // the INDEX of Vehicle moving direction in lvl File
+    /** the INDEX of Vehicle moving direction in lvl File*/
     public static final int INDEX_OF_DIRECTION = 3;
-    // the csv identifier for water
+    /** the csv identifier for water*/
     public static final String WATER = "water";
-    // the csv identifier for water
+    /** the csv identifier for water*/
     public static final String GRASS = "grass";
-    // the csv identifier for water
+    /** the csv identifier for water*/
     public static final String TREE = "tree";
-    // the hashMap key for FinishedPLayer
+    /** the hashMap key for FinishedPLayer*/
     public static final String FINISHED_PLAYER = "FinishedPlayer";
-    // the csv identifier for BUS
+    /** the csv identifier for BUS*/
     public static final String BUS = "bus";
-    // the csv identifier for RACECAR
+    /** the csv identifier for RACECAR*/
     public static final String RACECAR = "racecar";
-    // the csv identifier for BIKE
+    /** the csv identifier for BIKE*/
     public static final String BIKE = "bike";
-    // the csv identifier for BULLDOZER
+    /** the csv identifier for BULLDOZER*/
     public static final String BULLDOZER = "bulldozer";
-    // the csv identifier for LOG
+    /** the csv identifier for LOG*/
     public static final String LOG = "log";
-    // the csv identifier for LONGLOG
+    /** the csv identifier for LONGLOG*/
     public static final String LONGLOG = "longLog";
-    // the csv identifier for TURTLE
+    /** the csv identifier for TURTLE*/
     public static final String TURTLE = "turtle";
-    // the csv identifier for LONGLOG and LOG
+    /** the csv identifier for LONGLOG and LOG*/
     public static final String LOGS = "logs";
-    // The key of sprites need to be updated the behaviour in order
+    /** The key of sprites need to be updated the behaviour in order*/
     public static final String[] KEYS_OF_SPRITES_BEHAVIOUR_NEED_TO_BE_UPDATED = new String[]{ TREE,
             FINISHED_PLAYER, BULLDOZER, BUS, RACECAR, BIKE, WATER};
-    // Layer order means the things has smaller index will be drawn first.
+    /** Layer order means the things has smaller index will be drawn first.*/
     String[] KEYS_IN_LAYER_ORDER = new String[]{GRASS, WATER, TREE,
             BUS, BULLDOZER, RACECAR, BIKE,
             LOGS, FINISHED_PLAYER};
-    // The convert between second to millisecond
+    /** The convert between second to millisecond*/
     public static final long SECOND_TO_MILLISECOND = 1000;
-    // The period that the turtle should be in the water
+    /** The period that the turtle should be in the water*/
     public static final long TIME_OF_TURTLE_SHOULD_DISAPPEAR = 7*SECOND_TO_MILLISECOND;
-    // The period that the turtle should be on the water
+    /** The period that the turtle should be on the water*/
     public static final long TIME_OF_TURTLE_SHOULD_APPEAR = 2*SECOND_TO_MILLISECOND;
-    // The time for one above and under water cycle for turtles
+    /** The time for one above and under water cycle for turtles*/
     public static final long TIME_OF_CIRCLE_OF_TURTLES = TIME_OF_TURTLE_SHOULD_DISAPPEAR + TIME_OF_TURTLE_SHOULD_APPEAR;
 
-    /*********************************************The private instance attributes**************************************/
-    // The HashMap for storing objects in level
+    /* ********************************************The private instance attributes**************************************/
+    /** The HashMap for storing objects in level*/
     private HashMap<String, ArrayList<Sprite>> level;
-    // declare the current level of the world
+    /** declare the current level of the world*/
     private int currentLevel;
-    // the total time of the level (in milliseconds)
+    /** the total time of the level (in milliseconds)*/
     private Timer time;
-    // the boolean value to indicate whether the turtle is above the water
+    /** the boolean value to indicate whether the turtle is above the water*/
     private boolean isTurtleAboveWater;
-    // the extra life object
+    /** the extra life object*/
     private ExtraLife extraLife;
 
+
+    /* ********************************************The methods**************************************/
+    /**
+     * Method signature: public Level(String levelSrc, int currentLevel)
+     *
+     * @param currentLevel The level that indicates the current level of the level.
+     * @param levelSrc The reference to the level to initialize
+     *
+     * Description: This the constructor of the class Level. This method initialize its private attributes.
+     * */
     public Level(String levelSrc, int currentLevel){
+        // set the current level of the level to the given current level
         this.currentLevel = currentLevel;
+        // initialize the level with respect to the source of the level
         this.level = createTheBackground(levelSrc);
+        // start to record time
         this.time = new Timer();
+        // initialize an extra life
         this.extraLife = new ExtraLife();
         // The level 0  does not have turtle.
         isTurtleAboveWater = false;
@@ -236,7 +260,8 @@ public class Level {
 
     /**Name: private void createTheBackground(String LEVEL_REFERENCE);
      *
-     * @param LEVEL_REFERENCE => The reference of the level CSV file.
+     * @param LEVEL_REFERENCE  The reference of the level CSV file.
+     * @return The hash map for storing sprites of the level.
      *
      * Description: This method is use to create all the objects described in the level CSV file.
      * */
@@ -317,6 +342,7 @@ public class Level {
     /** Method signature: public Position holeCenter(Player player);
      *
      * @param player The reference to player
+     * @return The position of the center of the hole that the player should be drawn.
      *
      *Description: Return the center Position of the hole that the player current at.
      * */
