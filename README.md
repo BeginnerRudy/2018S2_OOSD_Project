@@ -11,6 +11,12 @@ Level 1 of Game            |  Level 2 of Game
   - Open the software with Intellij Idea or Eclipse. 
 
 # File Structure
-
+```
+|- doc
+    |- UML_V2.1.pdf // The UML design diagram 
+    |- project(1) (1).pdf  // The specification for project 1.
+    |- project2.pdf  // The specification for project 2.
+|- src // The source code of this game.
+```
 # Design in UML
 ![](doc/UML_V2.1-1.png)
